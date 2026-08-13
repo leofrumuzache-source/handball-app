@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Player Details - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3);">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <div style="display: flex; align-items: center;">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">☰</button>
+          <h1 class="main-header-title" id="pageHeader">Player Details</h1>
+        </div>
+        <div class="main-header-actions">
+          <a href="players.html" class="btn btn-secondary">
+            ← Back to Players
+          </a>
+          <button class="btn btn-primary" id="editPlayerBtn" data-master-only style="display: none;">
+            <span>✏️</span> Edit Player
+          </button>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Loading State -->
+        <div id="loadingState" style="text-align: center; padding: var(--spacing-12);">
+          <div style="font-size: 3rem; margin-bottom: var(--spacing-4);">⏳</div>
+          <h3>Loading player details...</h3>
+        </div>
+
+        <!-- Not Found State -->
+        <div id="notFoundState" class="hidden" style="text-align: center; padding: var(--spacing-12);">
+          <div style="font-size: 3rem; margin-bottom: var(--spacing-4);">❌</div>
+          <h3>Player Not Found</h3>
+          <p class="text-muted" style="margin-bottom: var(--spacing-6);">
+            The player you're looking for doesn't exist or has been deleted.
+          </p>
+          <a href="players.html" class="btn btn-primary">Back to Players</a>
+        </div>
+
+        <!-- Player Details Content -->
+        <div id="playerContent" class="hidden">
+          <!-- Player Info Card -->
+          <div class="card" style="margin-bottom: var(--spacing-8);">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 class="card-title" style="margin-bottom: var(--spacing-1);" id="playerNameDisplay">Player Name</h2>
+                <p class="card-subtitle" id="playerTeamDisplay">Team Name</p>
+              </div>
+              <div style="font-size: 3rem;">👤</div>
+            </div>
+            <div class="card-body">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-6);">
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🎽 Position</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="playerPositionDisplay">—</div>
+                </div>
+
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">👕 Jersey Number</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="playerJerseyDisplay">—</div>
+                </div>
+
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🎂 Year of Birth</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="playerYearDisplay">—</div>
+                </div>
+
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🌍 Nationality</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="playerNationalityDisplay">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Info Card -->
+          <div class="card" style="margin-bottom: var(--spacing-8);">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 class="card-title" style="margin-bottom: var(--spacing-1);">🎯 Current Team</h2>
+                <p class="card-subtitle">Team Information</p>
+              </div>
+              <a href="#" id="viewTeamBtn" class="btn btn-secondary">
+                <span>👁️</span> View Team
+              </a>
+            </div>
+            <div class="card-body" id="teamInfoContent">
+              <p class="text-muted">Loading team information...</p>
+            </div>
+          </div>
+
+          <!-- Statistics Placeholder (Future Feature) -->
+          <div class="card" style="margin-bottom: var(--spacing-8);">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 class="card-title" style="margin-bottom: var(--spacing-1);">📊 Player Statistics</h2>
+                <p class="card-subtitle">Performance metrics (Coming Soon)</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="empty-state" style="padding: var(--spacing-8);">
+                <div class="empty-state-icon">📈</div>
+                <h4 class="empty-state-title">Statistics Module - Coming Soon</h4>
+                <p class="empty-state-description">
+                  Player statistics will be available when the Match Module is implemented.
+                  Stats will include goals, assists, saves, and more.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // State
+    let currentPlayer = null;
+    let currentTeam = null;
+
+    // Initialize
+    function init() {
+      checkAuth();
+      
+      // Listen for logout events from other tabs
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'handball.auth' && e.newValue === null) {
+          console.log('🚪 Logout detected from another tab, redirecting...');
+          window.location.href = 'login.html';
+        }
+      });
+      
+      loadPlayer();
+      setupEventListeners();
+    }
+
+    // Check authentication
+    function checkAuth() {
+      const auth = AuthStore.getState();
+      if (!auth || !AuthStore.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const accessLevel = AuthStore.getAccessLevel();
+      
+      // Update sidebar
+      document.getElementById('userName').textContent = accessLevel === 'master' ? 'Administrator' : 'Viewer';
+      document.getElementById('userRole').textContent = accessLevel === 'master' ? 'Full Access' : 'View Only';
+      document.getElementById('userAvatar').textContent = accessLevel === 'master' ? 'A' : 'V';
+
+      // Show/hide edit button
+      const editBtn = document.getElementById('editPlayerBtn');
+      if (accessLevel === 'master') {
+        editBtn.style.display = 'block';
+      }
+
+      // Hide master-only elements
+      if (accessLevel !== 'master') {
+        document.querySelectorAll('[data-master-only]').forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+    }
+
+    // Load player details
+    function loadPlayer() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const playerId = urlParams.get('id');
+
+      if (!playerId) {
+        showNotFound();
+        return;
+      }
+
+      const player = PlayersStore.getById(playerId);
+      if (!player) {
+        showNotFound();
+        return;
+      }
+
+      currentPlayer = player;
+      currentTeam = TeamsStore.getById(player.teamId);
+
+      renderPlayerDetails();
+      renderTeamInfo();
+    }
+
+    // Show not found state
+    function showNotFound() {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+      document.getElementById('playerContent').classList.add('hidden');
+    }
+
+    // Render player details
+    function renderPlayerDetails() {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('playerContent').classList.remove('hidden');
+
+      // Set page title
+      document.getElementById('pageHeader').textContent = `${currentPlayer.firstName} ${currentPlayer.lastName}`;
+      document.title = `${currentPlayer.firstName} ${currentPlayer.lastName} - Player Details`;
+
+      // Player info
+      document.getElementById('playerNameDisplay').textContent = `${currentPlayer.firstName} ${currentPlayer.lastName}`;
+      
+      const teamName = currentTeam ? currentTeam.name : 'Unknown Team';
+      document.getElementById('playerTeamDisplay').textContent = teamName;
+      document.getElementById('playerPositionDisplay').textContent = currentPlayer.position || '—';
+      document.getElementById('playerJerseyDisplay').textContent = currentPlayer.jerseyNumber ? `#${currentPlayer.jerseyNumber}` : '—';
+      document.getElementById('playerYearDisplay').textContent = currentPlayer.yearOfBirth || '—';
+      document.getElementById('playerNationalityDisplay').textContent = currentPlayer.nationality || '—';
+    }
+
+    // Render team info
+    function renderTeamInfo() {
+      const teamInfo = document.getElementById('teamInfoContent');
+
+      if (!currentTeam) {
+        teamInfo.innerHTML = `
+          <p class="text-muted">Team information not available.</p>
+        `;
+        document.getElementById('viewTeamBtn').style.display = 'none';
+        return;
+      }
+
+      // Get club info
+      const club = ClubsStore.getByName(currentTeam.clubName);
+
+      teamInfo.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-6);">
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🎯 Team Name</h4>
+            <div style="font-weight: var(--font-weight-medium);">${currentTeam.name}</div>
+          </div>
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">📋 Category</h4>
+            <div style="font-weight: var(--font-weight-medium);">${currentTeam.category || '—'}</div>
+          </div>
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">👥 Gender</h4>
+            <div style="font-weight: var(--font-weight-medium);">${currentTeam.gender || '—'}</div>
+          </div>
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🏠 Club</h4>
+            <div style="font-weight: var(--font-weight-medium);">${club ? club.name : currentTeam.clubName}</div>
+          </div>
+        </div>
+      `;
+
+      // Setup view team button
+      document.getElementById('viewTeamBtn').href = `team-view.html?id=${currentTeam.id}`;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Edit button
+      document.getElementById('editPlayerBtn').addEventListener('click', () => {
+        if (currentPlayer) {
+          // Redirect to players.html with edit modal trigger
+          window.location.href = `players.html?edit=${currentPlayer.id}`;
+        }
+      });
+
+      // Logout button
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          AuthStore.logout();
+          Toast.info('Logged out successfully');
+          window.location.href = 'login.html';
+        }
+      });
+
+      // Mobile menu
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', () => {
+          document.querySelector('.sidebar').classList.toggle('sidebar-open');
+        });
+      }
+    }
+
+    // Initialize on load
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

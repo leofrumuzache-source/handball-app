@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Competition Details - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3);">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="page-header">
+        <div class="page-header-left">
+          <button class="btn btn-ghost btn-icon mobile-menu-toggle" id="mobileMenuToggle">
+            ☰
+          </button>
+          <div>
+            <a href="competitions.html" class="text-muted" style="text-decoration: none; font-size: var(--font-size-sm);">
+              ← Back to Competitions
+            </a>
+            <h1 class="page-title" id="competitionName">Loading...</h1>
+          </div>
+        </div>
+        <div class="page-header-right">
+          <button id="editCompetitionBtn" class="btn btn-secondary">
+            <span>✏️</span>
+            <span>Edit Competition</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Competition Info Banner -->
+        <div class="card" style="margin-bottom: var(--spacing-6);">
+          <div class="card-body">
+            <div style="display: flex; gap: var(--spacing-6); align-items: center; flex-wrap: wrap;">
+              <div>
+                <div class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--spacing-1);">Season</div>
+                <div style="font-weight: var(--font-weight-semibold);" id="competitionSeason">—</div>
+              </div>
+              <div style="height: 40px; width: 1px; background: var(--color-border);"></div>
+              <div>
+                <div class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--spacing-1);">Category</div>
+                <div><span class="badge badge-primary" id="competitionCategory">—</span></div>
+              </div>
+              <div>
+                <div class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--spacing-1);">Gender</div>
+                <div id="competitionGender">—</div>
+              </div>
+              <div>
+                <div class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--spacing-1);">Type</div>
+                <div id="competitionType">—</div>
+              </div>
+              <div style="height: 40px; width: 1px; background: var(--color-border);"></div>
+              <div>
+                <div class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--spacing-1);">Status</div>
+                <div><span class="badge badge-muted" id="competitionStatus">—</span></div>
+              </div>
+              <div style="height: 40px; width: 1px; background: var(--color-border);"></div>
+              <div style="flex: 1; min-width: 200px;">
+                <div class="text-muted" style="font-size: var(--font-size-xs); margin-bottom: var(--spacing-1);">Organizer</div>
+                <div id="competitionOrganizer">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab-button active" data-tab="overview">Overview</button>
+          <button class="tab-button" data-tab="stages">Stages</button>
+          <button class="tab-button" data-tab="teams">Teams</button>
+          <button class="tab-button" data-tab="matches">Matches</button>
+          <button class="tab-button" data-tab="standings">Standings</button>
+          <button class="tab-button" data-tab="settings">Settings</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Overview Tab -->
+          <div id="overview" class="tab-pane active">
+            <div class="form-row form-row-3" style="margin-top: var(--spacing-6);">
+              <div class="stat-card">
+                <div class="stat-card-icon primary">📋</div>
+                <div class="stat-card-value" id="statStages">0</div>
+                <div class="stat-card-label">Stages</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-icon accent">👥</div>
+                <div class="stat-card-value" id="statTeams">0</div>
+                <div class="stat-card-label">Teams</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-icon success">⚔️</div>
+                <div class="stat-card-value" id="statMatches">0</div>
+                <div class="stat-card-label">Matches</div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top: var(--spacing-6);">
+              <div class="card-header">
+                <h3 class="card-title">Competition Details</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-row form-row-2">
+                  <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <div id="competitionStartDate">—</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <div id="competitionEndDate">—</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Country</label>
+                    <div id="competitionCountry">—</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Created</label>
+                    <div id="competitionCreatedAt">—</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stages Tab -->
+          <div id="stages" class="tab-pane">
+            <div style="margin-top: var(--spacing-6); display: flex; justify-content: space-between; align-items: center;">
+              <h2 class="page-section-title">Competition Stages</h2>
+              <button id="addStageBtn" class="btn btn-primary" data-master-only>
+                <span>➕</span>
+                <span>Add Stage</span>
+              </button>
+            </div>
+            <div id="stagesList" style="margin-top: var(--spacing-4);">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Teams Tab -->
+          <div id="teams" class="tab-pane">
+            <div id="teamsList" style="margin-top: var(--spacing-6);">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Matches Tab -->
+          <div id="matches" class="tab-pane">
+            <div style="margin-top: var(--spacing-6); display: flex; justify-content: space-between; align-items: center;">
+              <h2 class="page-section-title">Matches</h2>
+              <div style="display: flex; gap: var(--spacing-2);">
+                <button id="generateMatchesBtn" class="btn btn-secondary" data-master-only>
+                  <span>🤖</span>
+                  <span>Generate Matches</span>
+                </button>
+                <button id="addMatchBtn" class="btn btn-primary" data-master-only>
+                  <span>➕</span>
+                  <span>Add Match</span>
+                </button>
+              </div>
+            </div>
+            <div id="matchesList" style="margin-top: var(--spacing-4);">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Standings Tab -->
+          <div id="standings" class="tab-pane">
+            <div style="margin-top: var(--spacing-6);">
+              <h2 class="page-section-title">Standings</h2>
+              <div class="form-group" style="margin-top: var(--spacing-4); max-width: 400px;">
+                <label class="form-label">Select Stage</label>
+                <select id="standingsStageSelect" class="form-select">
+                  <option value="">Select a stage...</option>
+                </select>
+              </div>
+              <div id="standingsTable" style="margin-top: var(--spacing-4);">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div id="settings" class="tab-pane">
+            <div style="margin-top: var(--spacing-6);">
+              <h2 class="page-section-title">Competition Settings</h2>
+              <div class="card" style="margin-top: var(--spacing-4);">
+                <div class="card-body">
+                  <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-3);">📊 Data Management</h3>
+                  <p class="text-muted" style="margin-bottom: var(--spacing-4);">
+                    Export competition data including teams, stages, and matches for backup or transfer.
+                  </p>
+                  <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-6);">
+                    <button onclick="exportCompetition()" class="btn btn-primary">
+                      <span>📥</span>
+                      <span>Export Competition (JSON)</span>
+                    </button>
+                  </div>
+                  
+                  <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-3); color: var(--color-error);">⚠️ Danger Zone</h3>
+                  <p class="text-muted" style="margin-bottom: var(--spacing-4);">
+                    Irreversible actions that will permanently delete data.
+                  </p>
+                  <button id="deleteCompetitionBtn" class="btn btn-danger" data-master-only>
+                    <span>🗑️</span>
+                    <span>Delete Competition</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Stage Modal -->
+  <div id="stageModal" class="modal-backdrop">
+    <div class="modal modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="stageModalTitle" class="modal-title">Add Stage</h3>
+          <button class="modal-close modal-close-btn">×</button>
+        </div>
+        <form id="stageForm">
+          <input type="hidden" id="stageId">
+          
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="stageName" class="form-label required">Stage Name</label>
+              <input type="text" id="stageName" class="form-input" required placeholder="e.g., Regular Season">
+            </div>
+            
+            <div class="form-group">
+              <label for="stageOrder" class="form-label required">Order</label>
+              <input type="number" id="stageOrder" class="form-input" required min="1" value="1">
+              <div class="form-hint">Stage sequence number</div>
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="stageFormat" class="form-label required">Format</label>
+              <select id="stageFormat" class="form-select" required onchange="handleFormatChange()">
+                <option value="">Select...</option>
+                <option value="league">League (Round-Robin)</option>
+                <option value="group_stage">Group Stage</option>
+                <option value="knockout">Knockout</option>
+                <option value="single_match">Single Match</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="stageStatus" class="form-label">Status</label>
+              <select id="stageStatus" class="form-select">
+                <option value="scheduled">Scheduled</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="leagueOptions" style="display: none;">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label for="numberOfGroups" class="form-label">Number of Groups</label>
+                <input type="number" id="numberOfGroups" class="form-input" min="1" max="32" value="1">
+                <div class="form-hint">1-32 groups (default: 1)</div>
+              </div>
+              
+              <div class="form-group">
+                <label for="rounds" class="form-label">Rounds</label>
+                <input type="number" id="rounds" class="form-input" min="1" max="3" value="2">
+                <div class="form-hint">1-3 rounds (default: 2)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="stageStartDate" class="form-label">Start Date</label>
+              <input type="date" id="stageStartDate" class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label for="stageEndDate" class="form-label">End Date</label>
+              <input type="date" id="stageEndDate" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Rules</label>
+            <div class="form-row form-row-3">
+              <div class="form-group">
+                <label for="pointsForWin" class="form-label" style="font-size: var(--font-size-sm);">Points for Win</label>
+                <input type="number" id="pointsForWin" class="form-input" value="2" min="0">
+              </div>
+              <div class="form-group">
+                <label for="pointsForDraw" class="form-label" style="font-size: var(--font-size-sm);">Points for Draw</label>
+                <input type="number" id="pointsForDraw" class="form-input" value="1" min="0">
+              </div>
+              <div class="form-group">
+                <label for="pointsForLoss" class="form-label" style="font-size: var(--font-size-sm);">Points for Loss</label>
+                <input type="number" id="pointsForLoss" class="form-input" value="0" min="0">
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+            <button type="submit" class="btn btn-primary">
+              <span>💾</span>
+              <span>Save Stage</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Team Modal -->
+  <div id="addTeamModal" class="modal-backdrop">
+    <div class="modal modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Add Team to Competition</h3>
+          <button class="modal-close modal-close-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="teamSearchInput" class="form-label">🔍 Search Teams</label>
+            <input type="text" id="teamSearchInput" class="form-input" placeholder="Search by team name or club..." oninput="filterAvailableTeams()">
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-3);">
+            <div class="form-group">
+              <label for="teamCategoryFilter" class="form-label">Filter by Category</label>
+              <select id="teamCategoryFilter" class="form-select" onchange="filterAvailableTeams()">
+                <option value="all">All Categories</option>
+                <option value="U13">U13</option>
+                <option value="U15">U15</option>
+                <option value="U17">U17</option>
+                <option value="U19">U19</option>
+                <option value="Senior">Senior</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="teamGenderFilter" class="form-label">Filter by Gender</label>
+              <select id="teamGenderFilter" class="form-select" onchange="filterAvailableTeams()">
+                <option value="all">All Genders</option>
+                <option value="Boys">Boys</option>
+                <option value="Girls">Girls</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="categoryWarning" class="alert alert-warning" style="display: none; margin-bottom: var(--spacing-4);">
+            <strong>⚠️ Category Mismatch:</strong> This is a friendly competition. You can add teams from different categories.
+          </div>
+
+          <div class="table-container" style="max-height: 400px; overflow-y: auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Team Name</th>
+                  <th>Category</th>
+                  <th>Gender</th>
+                  <th>Club</th>
+                </tr>
+              </thead>
+              <tbody id="availableTeamsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+          <button type="button" id="addSelectedTeamsBtn" class="btn btn-primary">
+            <span>➕</span>
+            <span>Add Selected Teams</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/standings.js"></script>
+  <script>
+    // Require authentication
+    requireAuth();
+    
+    // Listen for logout events from other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'handball.auth' && e.newValue === null) {
+        console.log('🚪 Logout detected from another tab, redirecting...');
+        window.location.href = 'login.html';
+      }
+    });
+
+    // State
+    let competitionId = null;
+    let competition = null;
+    let currentStageId = null;
+    let selectedTeamIds = [];
+
+    // Initialize
+    function init() {
+      // Get competition ID from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      competitionId = urlParams.get('id');
+      
+      if (!competitionId) {
+        Toast.error('Competition ID not found');
+        window.location.href = 'competitions.html';
+        return;
+      }
+
+      loadCompetition();
+      setupTabs();
+      setupEventListeners();
+      Modal.setupCloseHandlers('stageModal');
+      Modal.setupCloseHandlers('addTeamModal');
+      
+      // Update UI for access level AFTER DOM is ready
+      updateUIForAccessLevel();
+    }
+
+    // Load competition data
+    function loadCompetition() {
+      competition = CompetitionsStore.getById(competitionId);
+      
+      if (!competition) {
+        Toast.error('Competition not found');
+        window.location.href = 'competitions.html';
+        return;
+      }
+
+      // Check for pending stages from template
+      checkPendingStages();
+
+      // Update page title
+      document.getElementById('competitionName').textContent = competition.name || 'Competition';
+
+      // Update info banner
+      document.getElementById('competitionSeason').textContent = competition.season || '—';
+      document.getElementById('competitionCategory').textContent = competition.category || '—';
+      document.getElementById('competitionGender').textContent = competition.gender || '—';
+      document.getElementById('competitionType').textContent = competition.type || '—';
+      document.getElementById('competitionOrganizer').textContent = competition.organizer || '—';
+      
+      const statusEl = document.getElementById('competitionStatus');
+      statusEl.textContent = competition.status || 'planned';
+      statusEl.className = 'badge badge-' + {
+        'planned': 'muted',
+        'active': 'success',
+        'completed': 'primary',
+        'cancelled': 'error'
+      }[competition.status || 'planned'];
+
+      document.getElementById('competitionStartDate').textContent = competition.startDate || '—';
+      document.getElementById('competitionEndDate').textContent = competition.endDate || '—';
+      document.getElementById('competitionCountry').textContent = competition.country || '—';
+      document.getElementById('competitionCreatedAt').textContent = competition.createdAt ? new Date(competition.createdAt).toLocaleDateString() : '—';
+
+      // Load tabs
+      loadOverview();
+      loadStages();
+      loadTeams();
+      loadMatches();
+      loadStandingsSelector();
+    }
+
+    // Load Overview tab
+    function loadOverview() {
+      const stages = CompetitionStagesStore.getByCompetitionId(competitionId);
+      const matches = MatchesStore.getByCompetitionId(competitionId);
+      
+      document.getElementById('statStages').textContent = stages.length;
+      document.getElementById('statTeams').textContent = (competition.participatingTeams || []).length;
+      document.getElementById('statMatches').textContent = matches.length;
+    }
+
+    // Load Stages tab
+    function loadStages() {
+      const stages = CompetitionStagesStore.getByCompetitionId(competitionId);
+      const container = document.getElementById('stagesList');
+      
+      if (stages.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <h4 class="empty-state-title">No stages yet</h4>
+            <p class="empty-state-description">Add your first stage to define the competition format (Group Stage, Knockout, etc.)</p>
+            ${isMasterAccess() ? '<button class="btn btn-primary" onclick="openAddStageModal()">➕ Add Stage</button>' : ''}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div style="margin-bottom: var(--spacing-4);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="page-section-title" style="margin: 0;">Competition Stages (${stages.length})</h3>
+            ${isMasterAccess() ? `
+              <button class="btn btn-primary" onclick="openAddStageModal()">
+                <span>➕</span>
+                <span>Add Stage</span>
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      ` + stages.map(stage => {
+        const matchCount = MatchesStore.getByStageId(stage.id).length;
+        const statusClass = {
+          'scheduled': 'badge-muted',
+          'active': 'badge-success',
+          'completed': 'badge-primary',
+          'cancelled': 'badge-error'
+        }[stage.status || 'scheduled'];
+
+        const formatIcons = {
+          'league': '📊',
+          'group_stage': '🔢',
+          'knockout': '🏆',
+          'round_robin': '🔄'
+        };
+
+        return `
+          <div class="card" style="margin-bottom: var(--spacing-4);">
+            <div class="card-body">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h3 style="margin-bottom: var(--spacing-2);">${formatIcons[stage.format] || '📋'} ${escapeHtml(stage.name)}</h3>
+                  <div style="display: flex; gap: var(--spacing-3); align-items: center; flex-wrap: wrap;">
+                    <span class="badge badge-primary">${stage.format || 'league'}</span>
+                    <span class="badge ${statusClass}">${stage.status || 'scheduled'}</span>
+                    ${stage.numberOfGroups ? `<span class="badge badge-muted">${stage.numberOfGroups} group${stage.numberOfGroups !== 1 ? 's' : ''}</span>` : ''}
+                    ${stage.rounds ? `<span class="badge badge-muted">${stage.rounds} round${stage.rounds !== 1 ? 's' : ''}</span>` : ''}
+                    ${stage.startDate ? `<span class="text-muted" style="font-size: var(--font-size-sm);">📅 ${stage.startDate}</span>` : ''}
+                    ${stage.endDate ? `<span class="text-muted" style="font-size: var(--font-size-sm);">to ${stage.endDate}</span>` : ''}
+                    <span class="text-muted" style="font-size: var(--font-size-sm);">⚔️ ${matchCount} matches</span>
+                  </div>
+                </div>
+                ${isMasterAccess() ? `
+                  <div style="display: flex; gap: var(--spacing-2);">
+                    <button class="btn btn-ghost btn-sm" onclick="editStage('${stage.id}')">✏️ Edit</button>
+                    <button class="btn btn-ghost btn-sm" onclick="deleteStage('${stage.id}')" style="color: var(--color-error);">🗑️ Delete</button>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Load Teams tab
+    function loadTeams() {
+      const teamIds = competition.participatingTeams || [];
+      const container = document.getElementById('teamsList');
+      
+      if (teamIds.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <h4 class="empty-state-title">No teams enrolled</h4>
+            <p class="empty-state-description">Add teams to this competition</p>
+            ${isMasterAccess() ? '<button class="btn btn-primary" onclick="addTeam()">Add Team</button>' : ''}
+          </div>
+        `;
+        return;
+      }
+
+      const teams = teamIds.map(id => TeamsStore.getById(id)).filter(t => t);
+      
+      container.innerHTML = `
+        <div style="margin-bottom: var(--spacing-4); display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h3 class="page-section-title" style="margin: 0;">Participating Teams (${teams.length})</h3>
+          </div>
+          <div style="display: flex; gap: var(--spacing-2);">
+            <button class="btn btn-secondary" onclick="exportCompetition()">
+              <span>📥</span>
+              <span>Export JSON</span>
+            </button>
+            ${isMasterAccess() ? `
+              <button class="btn btn-primary" onclick="addTeam()">
+                <span>➕</span>
+                <span>Add Team</span>
+              </button>
+            ` : ''}
+          </div>
+        </div>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Team Name</th>
+                <th>Category</th>
+                <th>Gender</th>
+                <th>Club</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${teams.map(team => `
+                <tr>
+                  <td>
+                    <a href="team-view.html?id=${team.id}" style="text-decoration: none; color: var(--color-primary); font-weight: var(--font-weight-medium);">
+                      👁️ ${escapeHtml(team.name)}
+                    </a>
+                  </td>
+                  <td><span class="badge badge-primary">${escapeHtml(team.category || '—')}</span></td>
+                  <td>${escapeHtml(team.gender || '—')}</td>
+                  <td>${escapeHtml(team.clubName || '—')}</td>
+                  <td>
+                    ${isMasterAccess() ? `
+                      <button class="btn btn-ghost btn-sm" onclick="removeTeam('${team.id}')" style="color: var(--color-error);">
+                        🗑️ Remove
+                      </button>
+                    ` : ''}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Load Matches tab
+    function loadMatches() {
+      const matches = MatchesStore.getByCompetitionId(competitionId);
+      const container = document.getElementById('matchesList');
+      
+      if (matches.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚔️</div>
+            <h4 class="empty-state-title">No matches yet</h4>
+            <p class="empty-state-description">Generate matches automatically or add them manually</p>
+            ${isMasterAccess() ? `
+              <div style="display: flex; gap: var(--spacing-2); justify-content: center; margin-top: var(--spacing-4);">
+                <button class="btn btn-secondary" onclick="generateMatches()">🤖 Generate Matches</button>
+                <button class="btn btn-primary" onclick="addMatch()">➕ Add Match</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date/Time</th>
+                <th>Home Team</th>
+                <th>Score</th>
+                <th>Away Team</th>
+                <th>Round/Group</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${matches.map(match => {
+                const homeTeam = TeamsStore.getById(match.homeTeamId);
+                const awayTeam = TeamsStore.getById(match.awayTeamId);
+                const statusClass = {
+                  'scheduled': 'badge-muted',
+                  'live': 'badge-success',
+                  'finished': 'badge-primary',
+                  'postponed': 'badge-warning',
+                  'cancelled': 'badge-error'
+                }[match.status || 'scheduled'];
+
+                return `
+                  <tr>
+                    <td>
+                      <div>${match.date || '—'}</div>
+                      <div class="text-muted" style="font-size: var(--font-size-xs);">${match.time || '—'}</div>
+                    </td>
+                    <td><strong>${escapeHtml(homeTeam?.name || 'TBD')}</strong></td>
+                    <td style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-lg);">
+                      ${match.homeScore !== undefined ? match.homeScore : '-'} : ${match.awayScore !== undefined ? match.awayScore : '-'}
+                    </td>
+                    <td><strong>${escapeHtml(awayTeam?.name || 'TBD')}</strong></td>
+                    <td>
+                      ${match.round ? `<div>${escapeHtml(match.round)}</div>` : ''}
+                      ${match.group ? `<div class="text-muted" style="font-size: var(--font-size-xs);">${escapeHtml(match.group)}</div>` : ''}
+                    </td>
+                    <td><span class="badge ${statusClass}">${match.status || 'scheduled'}</span></td>
+                    <td>
+                      <a href="match-view.html?id=${match.id}" class="btn btn-ghost btn-sm">👁️ View</a>
+                      ${isMasterAccess() ? `
+                        <button class="btn btn-ghost btn-sm" onclick="editMatch('${match.id}')" style="color: var(--color-primary);">✏️ Edit</button>
+                        <button class="btn btn-ghost btn-sm" onclick="deleteMatch('${match.id}')" style="color: var(--color-error);">🗑️ Delete</button>
+                      ` : ''}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Load Standings selector
+    function loadStandingsSelector() {
+      const stages = CompetitionStagesStore.getByCompetitionId(competitionId);
+      const select = document.getElementById('standingsStageSelect');
+      
+      select.innerHTML = '<option value="">Select a stage...</option>' +
+        stages.map(stage => `<option value="${stage.id}">${escapeHtml(stage.name)}</option>`).join('');
+      
+      // Remove old event listeners by cloning
+      const newSelect = select.cloneNode(true);
+      select.parentNode.replaceChild(newSelect, select);
+      
+      newSelect.addEventListener('change', () => {
+        const stageId = newSelect.value;
+        if (stageId) {
+          loadStandings(stageId);
+        } else {
+          document.getElementById('standingsTable').innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📊</div>
+              <h4 class="empty-state-title">Select a Stage</h4>
+              <p class="empty-state-description">Choose a stage from the dropdown to view standings</p>
+            </div>
+          `;
+        }
+      });
+      
+      // Auto-select first stage if only one exists
+      if (stages.length === 1) {
+        newSelect.value = stages[0].id;
+        loadStandings(stages[0].id);
+      }
+    }
+
+    // Load standings for a stage
+    function loadStandings(stageId) {
+      if (!stageId) {
+        document.getElementById('standingsTable').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <h4 class="empty-state-title">Select a Stage</h4>
+            <p class="empty-state-description">Choose a stage from the dropdown to view standings</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const standings = StandingsCalculator.getStandingsForDisplay(competitionId, stageId);
+      const stage = CompetitionStagesStore.getById(stageId);
+      
+      if (!stage) {
+        document.getElementById('standingsTable').innerHTML = '<p class="text-muted">Stage not found</p>';
+        return;
+      }
+      
+      let html = '';
+      
+      if (standings.type === 'group') {
+        // Multiple groups
+        Object.keys(standings.groups).forEach(groupName => {
+          html += `
+            <div style="margin-bottom: var(--spacing-6);">
+              <h3 style="margin-bottom: var(--spacing-3); font-size: var(--font-size-lg);">Group ${groupName}</h3>
+              <div class="table-container">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">#</th>
+                      <th>Team</th>
+                      <th style="width: 60px;" title="Played">P</th>
+                      <th style="width: 60px;" title="Won">W</th>
+                      <th style="width: 60px;" title="Drawn">D</th>
+                      <th style="width: 60px;" title="Lost">L</th>
+                      <th style="width: 60px;" title="Goals For">GF</th>
+                      <th style="width: 60px;" title="Goals Against">GA</th>
+                      <th style="width: 60px;" title="Goal Difference">GD</th>
+                      <th style="width: 70px;" title="Points">Pts</th>
+                      <th style="width: 80px;">Form</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${standings.groups[groupName].map(team => renderStandingRow(team)).join('')}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        // Single league/standings
+        html = `
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">#</th>
+                  <th>Team</th>
+                  <th style="width: 60px;" title="Played">P</th>
+                  <th style="width: 60px;" title="Won">W</th>
+                  <th style="width: 60px;" title="Drawn">D</th>
+                  <th style="width: 60px;" title="Lost">L</th>
+                  <th style="width: 60px;" title="Goals For">GF</th>
+                  <th style="width: 60px;" title="Goals Against">GA</th>
+                  <th style="width: 60px;" title="Goal Difference">GD</th>
+                  <th style="width: 70px;" title="Points">Pts</th>
+                  <th style="width: 80px;">Form</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${standings.standings.map(team => renderStandingRow(team)).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+      
+      document.getElementById('standingsTable').innerHTML = html;
+    }
+    
+    // Render a single standing row
+    function renderStandingRow(team) {
+      const teamLink = `<a href="team-view.html?id=${team.teamId}" style="color: var(--color-primary); text-decoration: none; font-weight: 500;">${escapeHtml(team.teamName)}</a>`;
+      
+      // Form badges
+      let formHtml = '<div style="display: flex; gap: 2px;">';
+      for (let result of team.form) {
+        const color = result === 'W' ? 'badge-success' : result === 'L' ? 'badge-error' : 'badge-muted';
+        formHtml += `<span class="badge ${color}" style="min-width: 20px;">${result}</span>`;
+      }
+      formHtml += '</div>';
+      
+      return `
+        <tr>
+          <td><strong>${team.position}</strong></td>
+          <td>${teamLink}</td>
+          <td>${team.played}</td>
+          <td>${team.won}</td>
+          <td>${team.drawn}</td>
+          <td>${team.lost}</td>
+          <td>${team.goalsFor}</td>
+          <td>${team.goalsAgainst}</td>
+          <td style="color: ${team.goalDifference > 0 ? 'var(--color-success)' : team.goalDifference < 0 ? 'var(--color-error)' : 'inherit'}; font-weight: 500;">
+            ${team.goalDifference > 0 ? '+' : ''}${team.goalDifference}
+          </td>
+          <td style="font-weight: bold; font-size: var(--font-size-base);">${team.points}</td>
+          <td>${formHtml}</td>
+        </tr>
+      `;
+    }
+
+    // Setup tabs
+    function setupTabs() {
+      const tabButtons = document.querySelectorAll('.tab-button');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+
+          // Update buttons
+          tabButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Update panes
+          tabPanes.forEach(pane => {
+            pane.classList.remove('active');
+            if (pane.id === tabId) {
+              pane.classList.add('active');
+            }
+          });
+
+          // Reload tab content
+          if (tabId === 'overview') loadOverview();
+          if (tabId === 'stages') loadStages();
+          if (tabId === 'teams') loadTeams();
+          if (tabId === 'matches') loadMatches();
+          if (tabId === 'standings') loadStandingsSelector();
+        });
+      });
+
+      // Handle hash in URL
+      const hash = window.location.hash.substring(1);
+      if (hash && document.querySelector(`.tab-button[data-tab="${hash}"]`)) {
+        document.querySelector(`.tab-button[data-tab="${hash}"]`).click();
+      }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      document.getElementById('editCompetitionBtn')?.addEventListener('click', () => {
+        window.location.href = `competitions.html?edit=${competitionId}`;
+      });
+
+      document.getElementById('addStageBtn')?.addEventListener('click', openAddStageModal);
+      document.getElementById('stageForm')?.addEventListener('submit', handleStageSubmit);
+      
+      // Add team button is now handled dynamically in loadTeams()
+      // The button calls window.addTeam() directly via onclick
+      
+      // Add team modal - Add Selected Teams button
+      document.getElementById('addSelectedTeamsBtn')?.addEventListener('click', function() {
+        if (selectedTeamIds.length === 0) {
+          Toast.warning('Please select at least one team');
+          return;
+        }
+        
+        // Add teams to competition
+        const currentTeams = competition.participatingTeams || [];
+        const newTeams = [...currentTeams, ...selectedTeamIds];
+        
+        const updated = CompetitionsStore.update(competitionId, {
+          participatingTeams: newTeams
+        });
+        
+        if (updated) {
+          Toast.success(`Added ${selectedTeamIds.length} team(s) to competition`);
+          Modal.close('addTeamModal');
+          loadCompetition();
+          loadTeams();
+        } else {
+          Toast.error('Failed to add teams');
+        }
+      });
+      
+      // Add team modal - Cancel button (explicit handler)
+      const cancelBtn = document.querySelector('#addTeamModal .modal-close-btn');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+          selectedTeamIds = []; // Clear selection
+          Modal.close('addTeamModal');
+        });
+      }
+      
+      // Matches tab buttons
+      document.getElementById('generateMatchesBtn')?.addEventListener('click', () => {
+        // Generate matches for all stages
+        const stages = CompetitionStagesStore.getByCompetitionId(competitionId);
+        if (stages.length === 0) {
+          Toast.warning('Please add at least one stage before generating matches');
+          return;
+        }
+        
+        const teams = competition.participatingTeams || [];
+        if (teams.length < 2) {
+          Toast.warning('Please add at least 2 teams before generating matches');
+          return;
+        }
+        
+        // Simple round-robin generation for first stage
+        const stage = stages[0];
+        const allTeams = teams.map(teamId => TeamsStore.getById(teamId)).filter(Boolean);
+        
+        if (allTeams.length < 2) {
+          Toast.warning('Not enough valid teams to generate matches');
+          return;
+        }
+        
+        let matchesCreated = 0;
+        const matches = [];
+        
+        // Generate round-robin matches
+        for (let i = 0; i < allTeams.length; i++) {
+          for (let j = i + 1; j < allTeams.length; j++) {
+            matches.push({
+              competitionId: competitionId,
+              stageId: stage.id,
+              homeTeamId: allTeams[i].id,
+              awayTeamId: allTeams[j].id,
+              date: new Date().toISOString().split('T')[0],
+              time: '12:00',
+              venue: '',
+              status: 'scheduled',
+              round: `Round ${matchesCreated + 1}`
+            });
+            matchesCreated++;
+          }
+        }
+        
+        // Save matches
+        matches.forEach(match => MatchesStore.create(match));
+        
+        Toast.success(`Generated ${matchesCreated} matches for stage "${stage.name}"`);
+        loadMatches();
+      });
+      
+      document.getElementById('addMatchBtn')?.addEventListener('click', () => {
+        window.addMatch();
+      });
+      
+      // Delete competition button
+      document.getElementById('deleteCompetitionBtn')?.addEventListener('click', () => {
+        if (!isMasterAccess()) {
+          Toast.error('You do not have permission to delete competitions');
+          return;
+        }
+        
+        if (confirm(`Are you sure you want to delete "${competition.name}"? This will also delete all stages and matches. This action cannot be undone.`)) {
+          CompetitionsStore.delete(competitionId);
+          Toast.success('Competition deleted successfully');
+          window.location.href = 'competitions.html';
+        }
+      });
+      
+      // Logout button
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          AuthStore.logout();
+          Toast.info('Logged out successfully');
+          window.location.href = 'login.html';
+        }
+      });
+      
+      // Mobile menu toggle
+      document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
+        document.querySelector('.sidebar').classList.toggle('sidebar-open');
+      });
+    }
+
+    // Check and create pending stages from template
+    function checkPendingStages() {
+      const pendingStagesKey = 'pendingStages_' + competitionId;
+      const pendingStagesJson = sessionStorage.getItem(pendingStagesKey);
+      
+      if (!pendingStagesJson) return;
+      
+      try {
+        const pendingStages = JSON.parse(pendingStagesJson);
+        
+        if (pendingStages && pendingStages.length > 0) {
+          // Create all pending stages
+          pendingStages.forEach(stageData => {
+            CompetitionStagesStore.create({
+              competitionId: competitionId,
+              ...stageData
+            });
+          });
+          
+          Toast.success(`Created ${pendingStages.length} stages from template!`);
+          
+          // Clear from sessionStorage
+          sessionStorage.removeItem(pendingStagesKey);
+          
+          // Reload stages
+          loadStages();
+          loadOverview();
+        }
+      } catch (error) {
+        console.error('Error creating pending stages:', error);
+      }
+    }
+
+    // Handle format change
+    window.handleFormatChange = function() {
+      const format = document.getElementById('stageFormat').value;
+      const leagueOptions = document.getElementById('leagueOptions');
+      
+      if (format === 'league' || format === 'group_stage') {
+        leagueOptions.style.display = 'block';
+      } else {
+        leagueOptions.style.display = 'none';
+      }
+    };
+
+    // Open add stage modal
+    window.openAddStageModal = function() {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to add stages');
+        return;
+      }
+
+      currentStageId = null;
+      document.getElementById('stageModalTitle').textContent = 'Add Stage';
+      document.getElementById('stageForm').reset();
+      document.getElementById('stageOrder').value = CompetitionStagesStore.getByCompetitionId(competitionId).length + 1;
+      Modal.open('stageModal');
+    };
+
+    // Handle stage submit
+    function handleStageSubmit(e) {
+      e.preventDefault();
+
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to save stages');
+        return;
+      }
+
+      const format = document.getElementById('stageFormat').value;
+      const stageData = {
+        competitionId: competitionId,
+        name: document.getElementById('stageName').value.trim(),
+        order: parseInt(document.getElementById('stageOrder').value),
+        format: format,
+        status: document.getElementById('stageStatus').value,
+        startDate: document.getElementById('stageStartDate').value,
+        endDate: document.getElementById('stageEndDate').value,
+        rules: {
+          pointsForWin: parseInt(document.getElementById('pointsForWin').value),
+          pointsForDraw: parseInt(document.getElementById('pointsForDraw').value),
+          pointsForLoss: parseInt(document.getElementById('pointsForLoss').value)
+        }
+      };
+
+      if (format === 'league' || format === 'group_stage') {
+        stageData.numberOfGroups = parseInt(document.getElementById('numberOfGroups').value);
+        stageData.rounds = parseInt(document.getElementById('rounds').value);
+      }
+
+      CompetitionStagesStore.create(stageData);
+      Toast.success('Stage added successfully');
+      Modal.close('stageModal');
+      loadStages();
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '—';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Add new match - redirect to matches page with pre-selected competition
+    window.addMatch = function() {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to add matches');
+        return;
+      }
+      
+      // Redirect to matches page with competition filter
+      window.location.href = `matches.html?competitionId=${competitionId}`;
+    };
+
+    // Edit match - redirect to match-view.html
+    window.editMatch = function(matchId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to edit matches');
+        return;
+      }
+      
+      window.location.href = `match-view.html?id=${matchId}`;
+    };
+
+    // Delete match
+    window.deleteMatch = function(matchId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to delete matches');
+        return;
+      }
+      
+      if (confirm('Are you sure you want to delete this match? This action cannot be undone.')) {
+        const success = MatchesStore.delete(matchId);
+        if (success) {
+          Toast.success('Match deleted successfully');
+          loadMatches();
+        } else {
+          Toast.error('Failed to delete match');
+        }
+      }
+    };
+
+    // Open add team modal
+    window.addTeam = function() {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to add teams');
+        return;
+      }
+
+      console.log('Opening add team modal for competition:', competitionId);
+      console.log('Competition type:', competition.type);
+      console.log('Participating teams:', competition.participatingTeams);
+      
+      selectedTeamIds = [];
+      document.getElementById('teamSearchInput').value = '';
+      document.getElementById('teamCategoryFilter').value = 'all';
+      document.getElementById('teamGenderFilter').value = 'all';
+      
+      // Show warning for friendly competitions
+      const warningEl = document.getElementById('categoryWarning');
+      if (competition.type === 'friendly') {
+        warningEl.style.display = 'block';
+      } else {
+        warningEl.style.display = 'none';
+      }
+      
+      filterAvailableTeams();
+      Modal.open('addTeamModal');
+    };
+
+    // Filter available teams
+    window.filterAvailableTeams = function() {
+      const searchInput = document.getElementById('teamSearchInput').value.toLowerCase();
+      const categoryFilter = document.getElementById('teamCategoryFilter').value;
+      const genderFilter = document.getElementById('teamGenderFilter').value;
+      const tbody = document.getElementById('availableTeamsTableBody');
+      
+      // Get all teams
+      const allTeams = TeamsStore.getAll();
+      const existingTeamIds = competition.participatingTeams || [];
+      
+      // Filter out already added teams
+      const availableTeams = allTeams.filter(team => !existingTeamIds.includes(team.id));
+      
+      // Apply filters
+      const filtered = availableTeams.filter(team => {
+        const matchesSearch = !searchInput || 
+          (team.name && team.name.toLowerCase().includes(searchInput)) ||
+          (team.clubName && team.clubName.toLowerCase().includes(searchInput));
+        const matchesCategory = categoryFilter === 'all' || team.category === categoryFilter;
+        const matchesGender = genderFilter === 'all' || team.gender === genderFilter;
+        return matchesSearch && matchesCategory && matchesGender;
+      });
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="table-empty">
+              <div class="empty-state" style="padding: var(--spacing-6);">
+                <p class="text-muted">No available teams match the selected filters</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      tbody.innerHTML = filtered.map(team => {
+        const isSelected = selectedTeamIds.includes(team.id);
+        return `
+          <tr>
+            <td>
+              <input type="checkbox" 
+                     class="form-checkbox" 
+                     id="selectTeam_${team.id}" 
+                     value="${team.id}" 
+                     ${isSelected ? 'checked' : ''}
+                     onchange="toggleTeamSelection('${team.id}')">
+            </td>
+            <td><strong>${escapeHtml(team.name)}</strong></td>
+            <td><span class="badge badge-primary">${escapeHtml(team.category || '—')}</span></td>
+            <td>${escapeHtml(team.gender || '—')}</td>
+            <td>${escapeHtml(team.clubName || '—')}</td>
+          </tr>
+        `;
+      }).join('');
+    };
+
+    // Toggle team selection
+    window.toggleTeamSelection = function(teamId) {
+      const checkbox = document.getElementById(`selectTeam_${teamId}`);
+      const index = selectedTeamIds.indexOf(teamId);
+      
+      if (checkbox.checked && index === -1) {
+        selectedTeamIds.push(teamId);
+      } else if (!checkbox.checked && index !== -1) {
+        selectedTeamIds.splice(index, 1);
+      }
+    };
+
+    // Add selected teams to competition (moved to setupEventListeners)
+
+    // Remove team from competition
+    window.removeTeam = function(teamId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to remove teams');
+        return;
+      }
+      
+      const currentTeams = competition.participatingTeams || [];
+      const newTeams = currentTeams.filter(id => id !== teamId);
+      
+      const updated = CompetitionsStore.update(competitionId, {
+        participatingTeams: newTeams
+      });
+      
+      if (updated) {
+        Toast.success('Team removed from competition');
+        loadCompetition();
+        loadTeams();
+      } else {
+        Toast.error('Failed to remove team');
+      }
+    };
+
+    // Edit stage
+    window.editStage = function(stageId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to edit stages');
+        return;
+      }
+      
+      const stage = CompetitionStagesStore.getById(stageId);
+      if (!stage) {
+        Toast.error('Stage not found');
+        return;
+      }
+      
+      currentStageId = stageId;
+      document.getElementById('stageModalTitle').textContent = 'Edit Stage';
+      document.getElementById('stageName').value = stage.name || '';
+      document.getElementById('stageOrder').value = stage.order || 1;
+      document.getElementById('stageFormat').value = stage.format || 'league';
+      document.getElementById('stageStatus').value = stage.status || 'scheduled';
+      document.getElementById('stageStartDate').value = stage.startDate || '';
+      document.getElementById('stageEndDate').value = stage.endDate || '';
+      document.getElementById('pointsForWin').value = stage.rules?.pointsForWin || 3;
+      document.getElementById('pointsForDraw').value = stage.rules?.pointsForDraw || 1;
+      document.getElementById('pointsForLoss').value = stage.rules?.pointsForLoss || 0;
+      
+      if (stage.format === 'league' || stage.format === 'group_stage') {
+        document.getElementById('leagueOptions').style.display = 'block';
+        document.getElementById('numberOfGroups').value = stage.numberOfGroups || 1;
+        document.getElementById('rounds').value = stage.rounds || 2;
+      } else {
+        document.getElementById('leagueOptions').style.display = 'none';
+      }
+      
+      Modal.open('stageModal');
+    };
+
+    // Delete stage
+    window.deleteStage = function(stageId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to delete stages');
+        return;
+      }
+      
+      const stage = CompetitionStagesStore.getById(stageId);
+      if (!stage) {
+        Toast.error('Stage not found');
+        return;
+      }
+      
+      const matchCount = MatchesStore.getByStageId(stageId).length;
+      
+      if (matchCount > 0) {
+        if (!confirm(`This stage has ${matchCount} matches. Deleting it will also delete all matches. Are you sure?`)) {
+          return;
+        }
+      } else {
+        if (!confirm(`Are you sure you want to delete stage "${stage.name}"? This action cannot be undone.`)) {
+          return;
+        }
+      }
+      
+      // Delete associated matches first
+      const matches = MatchesStore.getByStageId(stageId);
+      matches.forEach(match => MatchesStore.delete(match.id));
+      
+      // Delete stage
+      CompetitionStagesStore.delete(stageId);
+      
+      Toast.success('Stage deleted successfully');
+      loadStages();
+      loadOverview();
+    };
+
+    // Export competition as JSON
+    window.exportCompetition = function() {
+      const exportData = {
+        competition: competition,
+        stages: CompetitionStagesStore.getByCompetitionId(competitionId),
+        teams: (competition.participatingTeams || []).map(id => TeamsStore.getById(id)).filter(t => t),
+        matches: MatchesStore.getByCompetitionId(competitionId),
+        exportedAt: new Date().toISOString()
+      };
+      
+      const filename = `competition-${competition.name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.json`;
+      downloadFile(exportData, filename, 'application/json');
+      Toast.success('Competition exported successfully');
+    };
+
+    // Initialize on load
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

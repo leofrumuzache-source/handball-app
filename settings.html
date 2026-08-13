@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Settings - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3);">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <div style="display: flex; align-items: center;">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">☰</button>
+          <h1 class="main-header-title">Settings</h1>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Data Export -->
+        <div class="dashboard-section">
+          <h2 class="dashboard-section-title">💾 Data Export & Backup</h2>
+          
+          <div class="data-management">
+            <!-- JSON Import -->
+            <div class="data-management-card">
+              <div class="data-management-icon">📥</div>
+              <h3 class="data-management-title">Import Data (JSON)</h3>
+              <p class="data-management-description">
+                Restore your data from a previously exported JSON backup file. This will merge with existing data.
+              </p>
+              <div style="display: flex; gap: var(--spacing-3); flex-wrap: wrap;">
+                <button type="button" class="btn btn-primary" id="importJsonBtn">
+                  📂 Select JSON Backup File
+                </button>
+                <input type="file" id="jsonFileInput" accept=".json" style="display: none;" />
+              </div>
+            </div>
+            
+            <!-- JSON Export -->
+            <div class="data-management-card">
+              <div class="data-management-icon">📦</div>
+              <h3 class="data-management-title">Export All Data (JSON)</h3>
+              <p class="data-management-description">
+                Download a complete backup of all clubs, teams, and players data. This file can be used to restore your data later.
+              </p>
+              <div style="display: flex; gap: var(--spacing-3); flex-wrap: wrap;">
+                <button type="button" class="btn btn-primary" id="exportAllBtn">
+                  📥 Download Full Backup
+                </button>
+                <button type="button" class="btn btn-secondary" id="exportClubsBtn">
+                  🏠 Clubs Only
+                </button>
+                <button type="button" class="btn btn-secondary" id="exportTeamsBtn">
+                  🎯 Teams Only
+                </button>
+                <button type="button" class="btn btn-secondary" id="exportPlayersBtn">
+                  👥 Players Only
+                </button>
+                <button type="button" class="btn btn-secondary" id="exportCompetitionsBtn">
+                  🏆 Competitions Only
+                </button>
+                <button type="button" class="btn btn-secondary" id="exportMatchesBtn">
+                  ⚔️ Matches Only
+                </button>
+              </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="data-management-card">
+              <div class="data-management-icon">📊</div>
+              <h3 class="data-management-title">Database Statistics</h3>
+              <div style="margin-bottom: var(--spacing-4);">
+                <div style="display: flex; justify-content: space-between; padding: var(--spacing-2) 0; border-bottom: 1px solid var(--color-border);">
+                  <span class="text-muted">Total Clubs</span>
+                  <strong id="statsClubs">0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--spacing-2) 0; border-bottom: 1px solid var(--color-border);">
+                  <span class="text-muted">Total Teams</span>
+                  <strong id="statsTeams">0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--spacing-2) 0; border-bottom: 1px solid var(--color-border);">
+                  <span class="text-muted">Total Players</span>
+                  <strong id="statsPlayers">0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--spacing-2) 0; border-bottom: 1px solid var(--color-border);">
+                  <span class="text-muted">Total Competitions</span>
+                  <strong id="statsCompetitions">0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--spacing-2) 0; border-bottom: 1px solid var(--color-border);">
+                  <span class="text-muted">Total Matches</span>
+                  <strong id="statsMatches">0</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--spacing-2) 0;">
+                  <span class="text-muted">Last Export</span>
+                  <strong id="statsLastExport">Never</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: var(--spacing-2) 0;">
+                  <span class="text-muted">Storage Used</span>
+                  <strong id="statsStorage">0 KB</strong>
+                </div>
+              </div>
+              <button type="button" class="btn btn-ghost" id="refreshStatsBtn">
+                🔄 Refresh Statistics
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="dashboard-section" data-master-only>
+          <h2 class="dashboard-section-title">⚠️ Data Management</h2>
+          
+          <div class="card" style="border-left: 4px solid var(--color-error);">
+            <div class="card-body">
+              <h3 style="color: var(--color-error); margin-bottom: var(--spacing-2);">🗑️ Danger Zone</h3>
+              <p class="text-muted" style="margin-bottom: var(--spacing-4);">
+                Irreversible actions that will permanently delete your data. Use with extreme caution.
+              </p>
+
+              <div style="display: flex; gap: var(--spacing-4); flex-wrap: wrap; align-items: center;">
+                <div style="flex: 1; min-width: 300px;">
+                  <p style="font-size: var(--font-size-sm); margin-bottom: var(--spacing-2);">
+                    <strong>Clear All Data:</strong> This will permanently delete all clubs, teams, players, competitions, and matches from the database. This action cannot be undone.
+                  </p>
+                  <p class="text-error" style="font-size: var(--font-size-sm);">
+                    ⚠️ Make sure you have exported a backup before proceeding!
+                  </p>
+                </div>
+                <button type="button" class="btn btn-danger" id="clearAllDataBtn">
+                  🗑️ Clear All Data
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Application Info -->
+        <div class="dashboard-section">
+          <h2 class="dashboard-section-title">ℹ️ Application Information</h2>
+          
+          <div class="card">
+            <div class="card-body">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-6);">
+                <div>
+                  <h4 style="margin-bottom: var(--spacing-2);">Version</h4>
+                  <p class="text-muted" style="font-size: var(--font-size-sm);">
+                    Handball Club Management v1.5.6<br>
+                    Build: 2026-08-12
+                  </p>
+                </div>
+
+                <div>
+                  <h4 style="margin-bottom: var(--spacing-2);">Features</h4>
+                  <ul style="font-size: var(--font-size-sm); color: var(--color-text-muted); padding-left: var(--spacing-4);">
+                    <li>Club, Team & Player Management</li>
+                    <li>CSV Import/Export</li>
+                    <li>JSON Backup & Restore</li>
+                    <li>Role-Based Access (PIN)</li>
+                    <li>LocalStorage Persistence</li>
+                    <li>Bidirectional Navigation</li>
+                    <li>Interactive Dashboard</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 style="margin-bottom: var(--spacing-2);">🚀 Future Features</h4>
+                  <ul style="font-size: var(--font-size-sm); color: var(--color-text-muted); padding-left: var(--spacing-4);">
+                    <li><strong>✅ Mobile PWA Version</strong> - Progressive Web App with offline support (v1.5.9)</li>
+                    <li><strong>📊 Statistics & Analytics Module</strong> - Player & team performance metrics (offensive/defensive)</li>
+                    <li><strong>🔴 Live Scoring Interface</strong> - Real-time match scoring with live updates</li>
+                    <li><strong>📋 Competition Templates</strong> - Romanian Junior II regulation presets & formats</li>
+                    <li><strong>👥 Player Roster Management</strong> - Assign players to teams, view team rosters</li>
+                    <li><strong>📅 Export Calendar to iCal/PDF</strong> - Share match schedules externally</li>
+                    <li><strong>📊 Export Standings to CSV</strong> - Download league tables for reports</li>
+                    <li><strong>🔗 Bidirectional Navigation</strong> - Club ↔ Team ↔ Player ↔ Match interconnections</li>
+                    <li><strong>📸 Player Photos & Profiles</strong> - Add player images and detailed profiles</li>
+                    <li><strong>🌍 Multi-Language Support</strong> - Romanian, English, and more</li>
+                    <li><strong>🔍 Advanced Search & Filters</strong> - Complex queries across all modules</li>
+                    <li><strong>📥 Data Import from External Sources</strong> - Import from federation databases</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 style="margin-bottom: var(--spacing-2);">Access Levels</h4>
+                  <div style="font-size: var(--font-size-sm); color: var(--color-text-muted);">
+                    <p><strong>Master PIN:</strong> Full access to all features</p>
+                    <p><strong>View PIN:</strong> Read-only access</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 style="margin-bottom: var(--spacing-2);">Technology</h4>
+                  <p class="text-muted" style="font-size: var(--font-size-sm);">
+                    Vanilla JavaScript<br>
+                    Vanilla CSS<br>
+                    LocalStorage API<br>
+                    No external dependencies
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Clear Data Confirmation Modal -->
+  <div id="clearDataModal" class="modal-backdrop">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">⚠️ Confirm Clear All Data</h3>
+        <button class="modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-error" style="font-weight: var(--font-weight-semibold);">
+          This action is IRREVERSIBLE!
+        </p>
+        <p>Are you absolutely sure you want to delete ALL clubs and teams?</p>
+        <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">
+          This will permanently remove:
+        </p>
+        <ul style="font-size: var(--font-size-sm); padding-left: var(--spacing-6);">
+          <li id="clearClubsCount">0 clubs</li>
+          <li id="clearTeamsCount">0 teams</li>
+          <li id="clearPlayersCount">0 players</li>
+        </ul>
+        <p class="text-error" style="font-size: var(--font-size-sm); margin-top: var(--spacing-4);">
+          ⚠️ Make sure you have exported a backup first!
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmClearBtn">
+          🗑️ Yes, Delete Everything
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Require authentication (master access only)
+    requireAuth();
+    
+    // Listen for logout events from other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'handball.auth' && e.newValue === null) {
+        console.log('🚪 Logout detected from another tab, redirecting...');
+        window.location.href = 'login.html';
+      }
+    });
+    
+    if (!isMasterAccess()) {
+      Toast.error('Access denied. Master PIN required for settings.');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 2000);
+    }
+
+    updateUIForAccessLevel();
+
+    // DOM Elements
+    const importJsonBtn = document.getElementById('importJsonBtn');
+    const jsonFileInput = document.getElementById('jsonFileInput');
+    const exportAllBtn = document.getElementById('exportAllBtn');
+    const exportClubsBtn = document.getElementById('exportClubsBtn');
+    const exportTeamsBtn = document.getElementById('exportTeamsBtn');
+    const exportPlayersBtn = document.getElementById('exportPlayersBtn');
+    const exportCompetitionsBtn = document.getElementById('exportCompetitionsBtn');
+    const exportMatchesBtn = document.getElementById('exportMatchesBtn');
+    const clearAllDataBtn = document.getElementById('clearAllDataBtn');
+    const confirmClearBtn = document.getElementById('confirmClearBtn');
+    const clearDataModal = document.getElementById('clearDataModal');
+    const refreshStatsBtn = document.getElementById('refreshStatsBtn');
+
+    // Initialize
+    function init() {
+      setupEventListeners();
+      updateStatistics();
+      Modal.setupCloseHandlers('clearDataModal');
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Import JSON
+      importJsonBtn.addEventListener('click', () => jsonFileInput.click());
+      
+      jsonFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          importJsonFile(file);
+        }
+      });
+      
+      // Export buttons
+      exportAllBtn.addEventListener('click', () => exportData('all'));
+      exportClubsBtn.addEventListener('click', () => exportData('clubs'));
+      exportTeamsBtn.addEventListener('click', () => exportData('teams'));
+      exportPlayersBtn.addEventListener('click', () => exportData('players'));
+      exportCompetitionsBtn.addEventListener('click', () => exportData('competitions'));
+      exportMatchesBtn.addEventListener('click', () => exportData('matches'));
+      clearAllDataBtn.addEventListener('click', openClearDataModal);
+      confirmClearBtn.addEventListener('click', executeClearAll);
+      refreshStatsBtn.addEventListener('click', updateStatistics);
+
+      // Modal close buttons
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = this.closest('.modal-backdrop');
+          if (modal) Modal.close(modal.id);
+        });
+      });
+
+      // Logout button
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          AuthStore.logout();
+          Toast.info('Logged out successfully');
+          window.location.href = 'login.html';
+        }
+      });
+    }
+
+    // Update statistics
+    function updateStatistics() {
+      const clubsCount = ClubsStore.getCount();
+      const teamsCount = TeamsStore.getCount();
+      const playersCount = PlayersStore.getCount();
+      const competitionsCount = CompetitionsStore.getCount();
+      const matchesCount = MatchesStore.getCount();
+
+      document.getElementById('statsClubs').textContent = clubsCount;
+      document.getElementById('statsTeams').textContent = teamsCount;
+      document.getElementById('statsPlayers').textContent = playersCount;
+      document.getElementById('statsCompetitions').textContent = competitionsCount;
+      document.getElementById('statsMatches').textContent = matchesCount;
+      document.getElementById('clearClubsCount').textContent = `${clubsCount} clubs`;
+      document.getElementById('clearTeamsCount').textContent = `${teamsCount} teams`;
+      document.getElementById('clearPlayersCount').textContent = `${playersCount} players`;
+
+      // Last export (from localStorage if available)
+      const lastExport = Storage.get('lastExport', 'Never');
+      document.getElementById('statsLastExport').textContent = lastExport !== 'Never' 
+        ? formatDate(lastExport, 'short')
+        : 'Never';
+
+      // Storage usage
+      const storageUsed = calculateStorageUsage();
+      document.getElementById('statsStorage').textContent = formatStorageSize(storageUsed);
+    }
+
+    // Calculate storage usage
+    function calculateStorageUsage() {
+      let total = 0;
+      for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key) && key.startsWith('handball.')) {
+          total += localStorage[key].length + key.length;
+        }
+      }
+      return total * 2; // Approximate bytes (UTF-16)
+    }
+
+    // Format storage size
+    function formatStorageSize(bytes) {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+
+    // Export data
+    function exportData(type) {
+      const timestamp = new Date().toISOString().split('T')[0];
+      let data, filename;
+
+      if (type === 'all') {
+        data = {
+          exportedAt: new Date().toISOString(),
+          version: '1.5.6',
+          clubs: ClubsStore.export(),
+          teams: TeamsStore.export(),
+          players: PlayersStore.export(),
+          competitions: CompetitionsStore.export(),
+          matches: MatchesStore.export()
+        };
+        filename = `handball-backup-${timestamp}.json`;
+      } else if (type === 'clubs') {
+        data = {
+          exportedAt: new Date().toISOString(),
+          version: '1.0',
+          clubs: ClubsStore.export()
+        };
+        filename = `handball-clubs-${timestamp}.json`;
+      } else if (type === 'teams') {
+        data = {
+          exportedAt: new Date().toISOString(),
+          version: '1.0',
+          teams: TeamsStore.export()
+        };
+        filename = `handball-teams-${timestamp}.json`;
+      } else if (type === 'players') {
+        data = {
+          exportedAt: new Date().toISOString(),
+          version: '1.0',
+          players: PlayersStore.export()
+        };
+        filename = `handball-players-${timestamp}.json`;
+      } else if (type === 'competitions') {
+        data = {
+          exportedAt: new Date().toISOString(),
+          version: '1.0',
+          competitions: CompetitionsStore.export()
+        };
+        filename = `handball-competitions-${timestamp}.json`;
+      } else if (type === 'matches') {
+        data = {
+          exportedAt: new Date().toISOString(),
+          version: '1.0',
+          matches: MatchesStore.export()
+        };
+        filename = `handball-matches-${timestamp}.json`;
+      }
+
+      downloadFile(data, filename);
+      
+      // Update last export timestamp
+      Storage.set('lastExport', new Date().toISOString());
+      
+      Toast.success(`Backup downloaded: ${filename}`);
+      updateStatistics();
+    }
+
+    // Open clear data modal
+    function openClearDataModal() {
+      updateStatistics(); // Refresh counts
+      Modal.open('clearDataModal');
+    }
+
+    // Execute clear all
+    function executeClearAll() {
+      // Clear all data
+      ClubsStore.getAll().forEach(club => ClubsStore.delete(club.id));
+      TeamsStore.getAll().forEach(team => TeamsStore.delete(team.id));
+      PlayersStore.getAll().forEach(player => PlayersStore.delete(player.id));
+      CompetitionsStore.getAll().forEach(comp => CompetitionsStore.delete(comp.id));
+      MatchesStore.getAll().forEach(match => MatchesStore.delete(match.id));
+
+      Modal.close('clearDataModal');
+      Toast.success('All data has been cleared');
+      updateStatistics();
+
+      // Redirect to dashboard after short delay
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1500);
+    }
+
+    // Format date helper
+    function formatDate(date, format = 'short') {
+      const d = new Date(date);
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return d.toLocaleDateString('en-US', options);
+    }
+
+    // Import JSON file
+    function importJsonFile(file) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to import data');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          const data = JSON.parse(event.target.result);
+          
+          // Validate backup structure
+          if (!data.version || !data.exportedAt) {
+            throw new Error('Invalid backup file format');
+          }
+
+          let importCount = 0;
+          let skipCount = 0;
+
+          // Import clubs
+          if (data.clubs && Array.isArray(data.clubs)) {
+            data.clubs.forEach(club => {
+              const existing = ClubsStore.getById(club.id);
+              if (!existing) {
+                ClubsStore.create(club);
+                importCount++;
+              } else {
+                skipCount++;
+              }
+            });
+          }
+
+          // Import teams
+          if (data.teams && Array.isArray(data.teams)) {
+            data.teams.forEach(team => {
+              const existing = TeamsStore.getById(team.id);
+              if (!existing) {
+                TeamsStore.create(team);
+                importCount++;
+              } else {
+                skipCount++;
+              }
+            });
+          }
+
+          // Import players
+          if (data.players && Array.isArray(data.players)) {
+            data.players.forEach(player => {
+              const existing = PlayersStore.getById(player.id);
+              if (!existing) {
+                PlayersStore.create(player);
+                importCount++;
+              } else {
+                skipCount++;
+              }
+            });
+          }
+
+          // Import competitions
+          if (data.competitions && Array.isArray(data.competitions)) {
+            data.competitions.forEach(comp => {
+              const existing = CompetitionsStore.getById(comp.id);
+              if (!existing) {
+                CompetitionsStore.create(comp);
+                importCount++;
+              } else {
+                skipCount++;
+              }
+            });
+          }
+
+          // Import matches
+          if (data.matches && Array.isArray(data.matches)) {
+            data.matches.forEach(match => {
+              const existing = MatchesStore.getById(match.id);
+              if (!existing) {
+                MatchesStore.create(match);
+                importCount++;
+              } else {
+                skipCount++;
+              }
+            });
+          }
+
+          // Update last export timestamp
+          Storage.set('lastExport', new Date().toISOString());
+          
+          Toast.success(`Import completed! ${importCount} records imported, ${skipCount} duplicates skipped.`);
+          updateStatistics();
+          
+          // Redirect to dashboard after short delay
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+
+        } catch (error) {
+          console.error('Import error:', error);
+          Toast.error(`Failed to import: ${error.message}`);
+        }
+      };
+      
+      reader.onerror = function() {
+        Toast.error('Failed to read file');
+      };
+      
+      reader.readAsText(file);
+    }
+
+    // Download file helper
+    function downloadFile(data, filename) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Initialize
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

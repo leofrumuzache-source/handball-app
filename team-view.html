@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Team Details - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3);">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <div style="display: flex; align-items: center;">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">☰</button>
+          <h1 class="main-header-title" id="pageHeader">Team Details</h1>
+        </div>
+        <div class="main-header-actions">
+          <a href="teams.html" class="btn btn-secondary">
+            ← Back to Teams
+          </a>
+          <button class="btn btn-primary" id="editTeamBtn" data-master-only style="display: none;">
+            <span>✏️</span> Edit Team
+          </button>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Loading State -->
+        <div id="loadingState" style="text-align: center; padding: var(--spacing-12);">
+          <div style="font-size: 3rem; margin-bottom: var(--spacing-4);">⏳</div>
+          <h3>Loading team details...</h3>
+        </div>
+
+        <!-- Not Found State -->
+        <div id="notFoundState" class="hidden" style="text-align: center; padding: var(--spacing-12);">
+          <div style="font-size: 3rem; margin-bottom: var(--spacing-4);">❌</div>
+          <h3>Team Not Found</h3>
+          <p class="text-muted" style="margin-bottom: var(--spacing-6);">
+            The team you're looking for doesn't exist or has been deleted.
+          </p>
+          <a href="teams.html" class="btn btn-primary">Back to Teams</a>
+        </div>
+
+        <!-- Team Details Content -->
+        <div id="teamContent" class="hidden">
+          <!-- Team Info Card -->
+          <div class="card" style="margin-bottom: var(--spacing-8);">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 class="card-title" style="margin-bottom: var(--spacing-1);" id="teamNameDisplay">Team Name</h2>
+                <p class="card-subtitle" id="teamClubDisplay">Club Name</p>
+              </div>
+              <div style="font-size: 3rem;">🎯</div>
+            </div>
+            <div class="card-body">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-6);">
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">📋 Category</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="teamCategoryDisplay">—</div>
+                </div>
+
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">👥 Gender</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="teamGenderDisplay">—</div>
+                </div>
+
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🎂 Age Category</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="teamAgeDisplay">—</div>
+                </div>
+
+                <div>
+                  <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">📊 Team Statistics</h4>
+                  <div style="font-weight: var(--font-weight-medium);" id="teamPlayersCount">0 players</div>
+                  <div class="text-muted" style="font-size: var(--font-size-sm);" id="teamCreatedDisplay">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Club Info Card -->
+          <div class="card" style="margin-bottom: var(--spacing-8);">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h2 class="card-title" style="margin-bottom: var(--spacing-1);">🏠 Parent Club</h2>
+                <p class="card-subtitle">Club Information</p>
+              </div>
+              <a href="#" id="viewClubBtn" class="btn btn-secondary">
+                👁️ View Club →
+              </a>
+            </div>
+            <div class="card-body">
+              <div id="clubInfoContent">
+                <!-- Populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Future: Team Statistics Section -->
+          <div class="dashboard-section">
+            <div class="page-header">
+              <h2 class="page-title" style="font-size: var(--font-size-xl);">📈 Team Statistics</h2>
+              <div class="page-actions" data-master-only>
+                <button type="button" class="btn btn-secondary" id="addStatsBtn" style="display: none;">
+                  <span>➕</span> Add Statistics
+                </button>
+              </div>
+            </div>
+
+            <div class="card" style="border: 2px dashed var(--color-border);">
+              <div class="card-body" style="text-align: center; padding: var(--spacing-12);">
+                <div style="font-size: 3rem; margin-bottom: var(--spacing-4);">📊</div>
+                <h4 style="margin-bottom: var(--spacing-2);">Statistics Coming Soon</h4>
+                <p class="text-muted" style="margin-bottom: var(--spacing-4); max-width: 500px; margin-left: auto; margin-right: auto;">
+                  Team statistics feature is under development. You'll be able to track matches, wins, losses, goals, and player performance here.
+                </p>
+                <div class="badge badge-accent">Future Feature</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Player Roster Section -->
+          <div class="dashboard-section">
+            <div class="page-header">
+              <h2 class="page-title" style="font-size: var(--font-size-xl);">👥 Player Roster</h2>
+              <div class="page-actions" data-master-only>
+                <a href="players.html?teamId=${teamId}" class="btn btn-primary" id="addPlayerBtn" style="display: none;">
+                  <span>➕</span> Add Player
+                </a>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-body" id="playerRosterContent">
+                <!-- Populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Team Modal -->
+  <div id="editModal" class="modal-backdrop">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Team</h3>
+        <button class="modal-close" aria-label="Close">×</button>
+      </div>
+      <form id="teamForm">
+        <div class="modal-body">
+          <input type="hidden" id="teamId">
+
+          <div class="form-group">
+            <label for="teamClubName" class="form-label required">Club</label>
+            <select
+              id="teamClubName"
+              class="form-select"
+              required
+            >
+              <option value="">Select a club...</option>
+              <!-- Populated by JavaScript -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="teamName" class="form-label required">Team Name</label>
+            <input
+              type="text"
+              id="teamName"
+              class="form-input"
+              placeholder="e.g., SCM Politehnica Timisoara"
+              required
+            >
+          </div>
+
+          <div class="form-row form-row-3">
+            <div class="form-group">
+              <label for="teamCategory" class="form-label required">Category</label>
+              <select
+                id="teamCategory"
+                class="form-select"
+                required
+              >
+                <option value="">Select...</option>
+                <option value="U15">U15</option>
+                <option value="U17">U17</option>
+                <option value="U19">U19</option>
+                <option value="U21">U21</option>
+                <option value="Senior">Senior</option>
+                <option value="Veteran">Veteran</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="teamGender" class="form-label required">Gender</label>
+              <select
+                id="teamGender"
+                class="form-select"
+                required
+              >
+                <option value="">Select...</option>
+                <option value="Boys">Boys</option>
+                <option value="Girls">Girls</option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="teamAgeCategory" class="form-label required">Age Category</label>
+              <input
+                type="text"
+                id="teamAgeCategory"
+                class="form-input"
+                placeholder="e.g., 2010/2011"
+                required
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary">
+            <span>💾</span> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Require authentication
+    requireAuth();
+    updateUIForAccessLevel();
+    
+    // Listen for logout events from other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'handball.auth' && e.newValue === null) {
+        console.log('🚪 Logout detected from another tab, redirecting...');
+        window.location.href = 'login.html';
+      }
+    });
+
+    // State
+    let currentTeamId = null;
+    let currentTeam = null;
+
+    // Get team ID from URL
+    function getTeamIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    // Initialize
+    function init() {
+      const teamId = getTeamIdFromUrl();
+
+      if (!teamId) {
+        showNotFound();
+        return;
+      }
+
+      currentTeamId = teamId;
+      loadTeamDetails(teamId);
+      setupEventListeners();
+      Modal.setupCloseHandlers('editModal');
+    }
+
+    // Load team details
+    function loadTeamDetails(teamId) {
+      const team = TeamsStore.getById(teamId);
+
+      if (!team) {
+        showNotFound();
+        return;
+      }
+
+      currentTeam = team;
+      renderTeamDetails(team);
+      loadClubInfo(team.clubName);
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('teamContent').classList.remove('hidden');
+      document.getElementById('pageHeader').textContent = 'Team Details';
+    }
+
+    // Show not found
+    function showNotFound() {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('notFoundState').classList.remove('hidden');
+    }
+
+    // Render team details
+    function renderTeamDetails(team) {
+      document.getElementById('teamNameDisplay').textContent = team.name || '—';
+      document.getElementById('teamClubDisplay').textContent = team.clubName || '—';
+      document.getElementById('teamCategoryDisplay').textContent = team.category || '—';
+      document.getElementById('teamGenderDisplay').textContent = team.gender || '—';
+      document.getElementById('teamAgeDisplay').textContent = team.ageCategory || '—';
+      
+      // Player count
+      const players = PlayersStore.getByTeamId(team.id);
+      document.getElementById('teamPlayersCount').textContent = `${players.length} player${players.length !== 1 ? 's' : ''}`;
+      
+      if (team.createdAt) {
+        document.getElementById('teamCreatedDisplay').textContent = `Created ${formatDate(team.createdAt, 'short')}`;
+      }
+
+      // Show edit button for master users
+      if (isMasterAccess()) {
+        const editBtn = document.getElementById('editTeamBtn');
+        editBtn.style.display = 'inline-flex';
+        editBtn.addEventListener('click', openEditModal);
+
+        // Show add player button
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
+        addPlayerBtn.style.display = 'inline-flex';
+        addPlayerBtn.href = `players.html?teamId=${team.id}`;
+      }
+
+      // Load player roster
+      loadPlayerRoster(team.id);
+    }
+
+    // Load club info
+    function loadClubInfo(clubName) {
+      const club = ClubsStore.getByName(clubName);
+      const clubInfoContent = document.getElementById('clubInfoContent');
+      const viewClubBtn = document.getElementById('viewClubBtn');
+
+      if (!club) {
+        clubInfoContent.innerHTML = `
+          <div class="text-warning" style="padding: var(--spacing-4); text-align: center;">
+            ⚠️ Club "${escapeHtml(clubName)}" not found in database
+          </div>
+        `;
+        viewClubBtn.style.display = 'none';
+        return;
+      }
+
+      // Update view club button link
+      viewClubBtn.href = `club-view.html?id=${club.id}`;
+
+      clubInfoContent.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-6);">
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">📍 Location</h4>
+            <div style="font-weight: var(--font-weight-medium);">${escapeHtml(club.city || '—')}</div>
+            <div class="text-muted" style="font-size: var(--font-size-sm);">${escapeHtml(club.county || '—')}</div>
+            <div class="text-muted" style="font-size: var(--font-size-sm);">${escapeHtml(club.region || '—')}</div>
+          </div>
+
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🌍 Country</h4>
+            <div style="font-weight: var(--font-weight-medium);">${escapeHtml(club.country || '—')}</div>
+          </div>
+
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">🏟️ Home Venue</h4>
+            <div style="font-weight: var(--font-weight-medium);">${escapeHtml(club.homeVenue || '—')}</div>
+          </div>
+
+          <div>
+            <h4 style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-bottom: var(--spacing-2);">📊 Club Info</h4>
+            <div style="font-weight: var(--font-weight-medium);">${escapeHtml(club.shortName || '—')}</div>
+            <div class="text-muted" style="font-size: var(--font-size-sm);">
+              ${club.createdAt ? 'Created ' + formatDate(club.createdAt, 'short') : '—'}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Populate club dropdown
+    function populateClubDropdown() {
+      const clubSelect = document.getElementById('teamClubName');
+      const clubs = ClubsStore.getAll();
+      
+      clubSelect.innerHTML = '<option value="">Select a club...</option>';
+      
+      if (clubs.length === 0) {
+        clubSelect.innerHTML += '<option value="" disabled>No clubs available</option>';
+        return;
+      }
+
+      clubs.forEach(club => {
+        const option = document.createElement('option');
+        option.value = club.name;
+        option.textContent = club.name;
+        if (club.name === currentTeam.clubName) {
+          option.selected = true;
+        }
+        clubSelect.appendChild(option);
+      });
+    }
+
+    // Load player roster
+    function loadPlayerRoster(teamId) {
+      const players = PlayersStore.getByTeamId(teamId);
+      const rosterContent = document.getElementById('playerRosterContent');
+
+      if (players.length === 0) {
+        rosterContent.innerHTML = `
+          <div class="empty-state" style="padding: var(--spacing-8);">
+            <div class="empty-state-icon">👕</div>
+            <h4 class="empty-state-title">No Players Yet</h4>
+            <p class="empty-state-description">Add your first player to this team</p>
+            ${isMasterAccess() ? `<a href="players.html?teamId=${teamId}" class="btn btn-primary" style="margin-top: var(--spacing-4);">Add Player</a>` : ''}
+          </div>
+        `;
+        return;
+      }
+
+      rosterContent.innerHTML = `
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Player Name</th>
+                <th>Position</th>
+                <th>Jersey #</th>
+                <th>Year of Birth</th>
+                <th>Nationality</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${players.map(player => `
+                <tr>
+                  <td>
+                    <strong>
+                      <a href="player-view.html?id=${player.id}" style="color: var(--color-primary); text-decoration: none;">
+                        ${escapeHtml(player.firstName)} ${escapeHtml(player.lastName)}
+                      </a>
+                    </strong>
+                  </td>
+                  <td><span class="badge badge-primary">${escapeHtml(player.position)}</span></td>
+                  <td>${player.jerseyNumber ? `#${player.jerseyNumber}` : '—'}</td>
+                  <td>${player.yearOfBirth || '—'}</td>
+                  <td>${escapeHtml(player.nationality) || '—'}</td>
+                  <td>
+                    <a href="player-view.html?id=${player.id}" class="btn btn-ghost btn-sm">👁️ View</a>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      document.getElementById('teamForm').addEventListener('submit', handleFormSubmit);
+
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = this.closest('.modal-backdrop');
+          if (modal) Modal.close(modal.id);
+        });
+      });
+
+      // Future feature button (placeholder)
+      document.getElementById('addStatsBtn')?.addEventListener('click', () => {
+        Toast.info('Statistics feature coming soon!');
+      });
+
+      // Logout button
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          AuthStore.logout();
+          Toast.info('Logged out successfully');
+          window.location.href = 'login.html';
+        }
+      });
+    }
+
+    // Open edit modal
+    function openEditModal() {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to edit teams');
+        return;
+      }
+
+      document.getElementById('teamId').value = currentTeam.id;
+      document.getElementById('teamClubName').value = currentTeam.clubName || '';
+      document.getElementById('teamName').value = currentTeam.name || '';
+      document.getElementById('teamCategory').value = currentTeam.category || '';
+      document.getElementById('teamGender').value = currentTeam.gender || '';
+      document.getElementById('teamAgeCategory').value = currentTeam.ageCategory || '';
+
+      FormValidator.clearErrors(document.getElementById('teamForm'));
+      populateClubDropdown();
+      Modal.open('editModal');
+    }
+
+    // Handle form submit
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to save teams');
+        return;
+      }
+
+      if (!FormValidator.validateRequired(document.getElementById('teamForm'))) {
+        Toast.error('Please fill in all required fields');
+        return;
+      }
+
+      const teamData = {
+        clubName: document.getElementById('teamClubName').value.trim(),
+        name: document.getElementById('teamName').value.trim(),
+        category: document.getElementById('teamCategory').value.trim(),
+        gender: document.getElementById('teamGender').value.trim(),
+        ageCategory: document.getElementById('teamAgeCategory').value.trim()
+      };
+
+      // Validate club exists
+      const club = ClubsStore.getByName(teamData.clubName);
+      if (!club) {
+        Toast.error('Selected club no longer exists');
+        return;
+      }
+
+      const result = TeamsStore.update(currentTeamId, teamData);
+      if (result) {
+        Toast.success('Team updated successfully');
+        Modal.close('editModal');
+        currentTeam = result;
+        renderTeamDetails(result);
+        loadClubInfo(result.clubName);
+        document.getElementById('pageHeader').textContent = 'Team Details';
+      } else {
+        Toast.error('Failed to update team');
+      }
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '—';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Format date helper
+    function formatDate(date, format = 'short') {
+      const d = new Date(date);
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return d.toLocaleDateString('en-US', options);
+    }
+
+    // Initialize on load
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

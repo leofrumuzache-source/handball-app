@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Players - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3); cursor: pointer; pointer-events: auto; z-index: 1000; position: relative;">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <div style="display: flex; align-items: center;">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">☰</button>
+          <h1 class="main-header-title">Players Management</h1>
+        </div>
+        <div class="main-header-actions">
+          <button class="btn btn-primary" id="createPlayerBtn" data-master-only onclick="openCreateModal()">
+            <span>➕</span> Create Player
+          </button>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-4); padding-bottom: var(--spacing-3); border-bottom: 2px solid var(--color-border);">
+            <h2 class="filters-title" style="margin: 0; border: none; padding: 0;">Filters</h2>
+            <button id="clearFiltersBtn" class="btn btn-ghost" style="font-size: var(--font-size-sm); padding: var(--spacing-1) var(--spacing-3);">
+              <span>🔄</span>
+              <span>Clear Filters</span>
+            </button>
+          </div>
+          <div class="filters-grid">
+            <input type="text" id="searchNameInput" class="form-input" placeholder="🔍 Player Name...">
+            <select id="teamFilter" class="form-select">
+              <option value="">All Teams</option>
+            </select>
+            <select id="positionFilter" class="form-select">
+              <option value="">All Positions</option>
+              <option value="Goalkeeper">Goalkeeper</option>
+              <option value="Left Wing">Left Wing</option>
+              <option value="Left Back">Left Back</option>
+              <option value="Center Back">Center Back</option>
+              <option value="Right Back">Right Back</option>
+              <option value="Right Wing">Right Wing</option>
+              <option value="Pivot">Pivot</option>
+            </select>
+            <select id="jerseyFilter" class="form-select">
+              <option value="">All Jersey Numbers</option>
+            </select>
+            <select id="yearOfBirthFilter" class="form-select">
+              <option value="">All Years</option>
+            </select>
+            <select id="nationalityFilter" class="form-select">
+              <option value="">All Nationalities</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Players Table -->
+        <div class="table-container">
+          <table class="table" id="playersTable">
+            <thead>
+              <tr>
+                <th data-sortable="0">Player Name</th>
+                <th data-sortable="1">Team</th>
+                <th data-sortable="2">Position</th>
+                <th data-sortable="3">Jersey #</th>
+                <th data-sortable="4">Year of Birth</th>
+                <th data-sortable="5">Nationality</th>
+                <th style="width: 150px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="playersTableBody">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Player Modal -->
+  <div id="playerModal" class="modal-backdrop">
+    <div class="modal modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle">Create Player</h3>
+          <button class="modal-close" onclick="Modal.close('playerModal')">&times;</button>
+        </div>
+        <form id="playerForm">
+          <input type="hidden" id="playerId">
+          
+          <div class="modal-body">
+            <!-- Personal Information -->
+            <div class="form-section">
+              <h4 class="form-section-title">Personal Information</h4>
+              
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                <div class="form-group">
+                  <label class="form-label" for="playerFirstName">First Name *</label>
+                  <input
+                    type="text"
+                    id="playerFirstName"
+                    class="form-input"
+                    required
+                    placeholder="e.g., Andrei"
+                  >
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="playerLastName">Last Name *</label>
+                  <input
+                    type="text"
+                    id="playerLastName"
+                    class="form-input"
+                    required
+                    placeholder="e.g., Popescu"
+                  >
+                </div>
+              </div>
+
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-4);">
+                <div class="form-group">
+                  <label class="form-label" for="playerYearOfBirth">Year of Birth</label>
+                  <input
+                    type="number"
+                    id="playerYearOfBirth"
+                    class="form-input"
+                    min="1950"
+                    max="2025"
+                    placeholder="e.g., 2010"
+                  >
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="playerNationality">Nationality</label>
+                  <input
+                    type="text"
+                    id="playerNationality"
+                    class="form-input"
+                    placeholder="e.g., Romania"
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Team & Position -->
+            <div class="form-section">
+              <h4 class="form-section-title">Team & Position</h4>
+              
+              <div class="form-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-4);">
+                <div class="form-group">
+                  <label class="form-label" for="playerTeamId">Team *</label>
+                  <select id="playerTeamId" class="form-select" required>
+                    <option value="">Select a team...</option>
+                  </select>
+                  <div class="form-hint">Player must be assigned to a team</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="playerJerseyNumber">Jersey Number</label>
+                  <input
+                    type="number"
+                    id="playerJerseyNumber"
+                    class="form-input"
+                    min="1"
+                    max="99"
+                    placeholder="e.g., 10"
+                  >
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="playerPosition">Position *</label>
+                <select id="playerPosition" class="form-select" required>
+                  <option value="">Select a position...</option>
+                  <option value="Goalkeeper">Goalkeeper</option>
+                  <option value="Left Wing">Left Wing</option>
+                  <option value="Left Back">Left Back</option>
+                  <option value="Center Back">Center Back</option>
+                  <option value="Right Back">Right Back</option>
+                  <option value="Right Wing">Right Wing</option>
+                  <option value="Pivot">Pivot</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-ghost" onclick="Modal.close('playerModal')">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="savePlayerBtn">
+              <span>💾</span> Save Player
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal-backdrop">
+    <div class="modal modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Delete Player</h3>
+          <button class="modal-close" onclick="Modal.close('deleteModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom: var(--spacing-4);">
+            Are you sure you want to delete this player?
+          </p>
+          <p class="text-muted" style="font-size: var(--font-size-sm);">
+            <strong>Warning:</strong> This action cannot be undone.
+          </p>
+        </div>
+        <div class="modal-footer" style="justify-content: center;">
+          <button class="btn btn-ghost" onclick="Modal.close('deleteModal')">Cancel</button>
+          <button class="btn btn-error" id="confirmDeleteBtn" style="margin-left: var(--spacing-3);">
+            <span>🗑️</span> Delete Player
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // State
+    let currentPlayerId = null;
+    let deletePlayerId = null;
+
+    // DOM Elements
+    const playerModal = document.getElementById('playerModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const playerForm = document.getElementById('playerForm');
+    const playersTableBody = document.getElementById('playersTableBody');
+    const searchNameInput = document.getElementById('searchNameInput');
+    const teamFilter = document.getElementById('teamFilter');
+    const positionFilter = document.getElementById('positionFilter');
+    const jerseyFilter = document.getElementById('jerseyFilter');
+    const yearOfBirthFilter = document.getElementById('yearOfBirthFilter');
+    const nationalityFilter = document.getElementById('nationalityFilter');
+    const createPlayerBtn = document.getElementById('createPlayerBtn');
+    const savePlayerBtn = document.getElementById('savePlayerBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const playerTeamSelect = document.getElementById('playerTeamId');
+
+    // Initialize
+    function init() {
+      try {
+        console.log('🚀 Starting players module initialization...');
+        checkAuth();
+        loadPlayers();
+        populateTeamDropdown();
+        setupEventListeners();
+        Modal.setupCloseHandlers('playerModal');
+        Modal.setupCloseHandlers('deleteModal');
+        console.log('✅ Players module initialized successfully');
+        console.log('✅ Modal object available:', !!window.Modal);
+        console.log('✅ createPlayerBtn element:', document.getElementById('createPlayerBtn'));
+      } catch (error) {
+        console.error('❌ Error initializing players module:', error);
+        alert('Error loading players module. Please check console (F12) for details.');
+      }
+    }
+
+    // Check authentication
+    function checkAuth() {
+      const auth = AuthStore.getState();
+      if (!auth || !AuthStore.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const accessLevel = AuthStore.getAccessLevel();
+      
+      // Update sidebar
+      document.getElementById('userName').textContent = accessLevel === 'master' ? 'Administrator' : 'Viewer';
+      document.getElementById('userRole').textContent = accessLevel === 'master' ? 'Full Access' : 'View Only';
+      document.getElementById('userAvatar').textContent = accessLevel === 'master' ? 'A' : 'V';
+
+      // Hide master-only elements
+      if (accessLevel !== 'master') {
+        document.querySelectorAll('[data-master-only]').forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+    }
+
+    // Load and display players
+    function loadPlayers() {
+      const players = PlayersStore.getAll();
+      populateFilterDropdowns(players);
+      const filtered = filterPlayers(players);
+      renderPlayersTable(filtered);
+    }
+
+    // Populate filter dropdowns with unique values
+    function populateFilterDropdowns(players) {
+      // Get unique values
+      const jerseyNumbers = [...new Set(players.map(p => p.jerseyNumber).filter(Boolean))].sort((a, b) => parseInt(a) - parseInt(b));
+      const yearsOfBirth = [...new Set(players.map(p => p.yearOfBirth).filter(Boolean))].sort((a, b) => parseInt(b) - parseInt(a));
+      const nationalities = [...new Set(players.map(p => p.nationality).filter(Boolean))].sort();
+
+      // Populate jersey filter
+      jerseyFilter.innerHTML = '<option value="">All Jersey Numbers</option>';
+      jerseyNumbers.forEach(jersey => {
+        const option = document.createElement('option');
+        option.value = jersey;
+        option.textContent = `#${jersey}`;
+        jerseyFilter.appendChild(option);
+      });
+
+      // Populate year of birth filter
+      yearOfBirthFilter.innerHTML = '<option value="">All Years</option>';
+      yearsOfBirth.forEach(year => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearOfBirthFilter.appendChild(option);
+      });
+
+      // Populate nationality filter
+      nationalityFilter.innerHTML = '<option value="">All Nationalities</option>';
+      nationalities.forEach(nationality => {
+        const option = document.createElement('option');
+        option.value = nationality;
+        option.textContent = nationality;
+        nationalityFilter.appendChild(option);
+      });
+    }
+
+    // Filter players by search, position, and team
+    function filterPlayers(players) {
+      const nameTerm = searchNameInput.value.toLowerCase();
+      const selectedTeamId = teamFilter.value;
+      const position = positionFilter.value;
+      const jersey = jerseyFilter.value;
+      const yearOfBirth = yearOfBirthFilter.value;
+      const nationality = nationalityFilter.value;
+
+      return players.filter(player => {
+        // Name filter (firstName + lastName)
+        const fullName = `${player.firstName || ''} ${player.lastName || ''}`.toLowerCase();
+        const matchesName = !nameTerm || fullName.includes(nameTerm);
+
+        // Team filter
+        const matchesTeam = !selectedTeamId || (player.teamId && player.teamId === selectedTeamId);
+
+        // Position filter
+        const matchesPosition = !position || player.position === position;
+
+        // Jersey number filter
+        const matchesJersey = !jersey || (player.jerseyNumber && player.jerseyNumber.toString() === jersey);
+
+        // Year of birth filter
+        const matchesYearOfBirth = !yearOfBirth || (player.yearOfBirth && player.yearOfBirth.toString() === yearOfBirth);
+
+        // Nationality filter
+        const matchesNationality = !nationality || (player.nationality && player.nationality === nationality);
+
+        return matchesName && matchesTeam && matchesPosition && matchesJersey && matchesYearOfBirth && matchesNationality;
+      });
+    }
+
+    // Render players table
+    function renderPlayersTable(players) {
+      if (players.length === 0) {
+        playersTableBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="table-empty">
+              <div class="empty-state">
+                <div class="empty-state-icon">👥</div>
+                <h4 class="empty-state-title">No players found</h4>
+                <p class="empty-state-description">Create your first player to get started</p>
+                ${isMasterAccess() ? '<button class="btn btn-primary" onclick="openCreateModal()">Create Player</button>' : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      playersTableBody.innerHTML = players.map(player => {
+        const team = TeamsStore.getById(player.teamId);
+        const teamName = team ? team.name : 'Unknown Team';
+        
+        return `
+        <tr>
+          <td>
+            <strong>
+              <a href="player-view.html?id=${player.id}" style="color: var(--color-primary); text-decoration: none;">
+                ${escapeHtml(player.firstName)} ${escapeHtml(player.lastName)}
+              </a>
+            </strong>
+          </td>
+          <td>
+            <a href="team-view.html?id=${player.teamId}" style="color: var(--color-primary); text-decoration: none;">
+              ${escapeHtml(teamName)}
+            </a>
+          </td>
+          <td><span class="badge badge-primary">${escapeHtml(player.position)}</span></td>
+          <td>${player.jerseyNumber ? `#${player.jerseyNumber}` : '—'}</td>
+          <td>${player.yearOfBirth || '—'}</td>
+          <td>${escapeHtml(player.nationality) || '—'}</td>
+          <td>
+            <div class="table-actions">
+              <a href="player-view.html?id=${player.id}" class="btn btn-ghost btn-sm" title="View Details">
+                👁️ View
+              </a>
+              ${isMasterAccess() ? `
+                <button class="btn btn-ghost btn-sm" onclick="openEditModal('${player.id}')" title="Edit">
+                  ✏️ Edit
+                </button>
+                <button class="btn btn-ghost btn-sm" onclick="openDeleteModal('${player.id}')" style="color: var(--color-error);" title="Delete">
+                  🗑️
+                </button>
+              ` : `
+                <span class="text-muted" style="font-size: var(--font-size-xs);">View only</span>
+              `}
+            </div>
+          </td>
+        </tr>
+        `;
+      }).join('');
+
+      // Setup sortable
+      TableHelper.setupSortable(document.getElementById('playersTable'));
+    }
+
+    // Populate team dropdown
+    function populateTeamDropdown() {
+      const teams = TeamsStore.getAll();
+      
+      teamFilter.innerHTML = '<option value="">All Teams</option>';
+      playerTeamSelect.innerHTML = '<option value="">Select a team...</option>';
+      
+      if (teams.length === 0) {
+        teamFilter.innerHTML += '<option value="" disabled>No teams available</option>';
+        playerTeamSelect.innerHTML += '<option value="" disabled>No teams available</option>';
+        return;
+      }
+
+      teams.forEach(team => {
+        // Filter dropdown
+        const filterOption = document.createElement('option');
+        filterOption.value = team.id;
+        filterOption.textContent = team.name;
+        teamFilter.appendChild(filterOption);
+
+        // Form dropdown
+        const formOption = document.createElement('option');
+        formOption.value = team.id;
+        formOption.textContent = team.name;
+        playerTeamSelect.appendChild(formOption);
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      console.log('Setting up event listeners...');
+      console.log('Create button:', createPlayerBtn);
+      console.log('Form:', playerForm);
+      
+      if (!createPlayerBtn) {
+        console.error('❌ Create Player button not found!');
+      } else {
+        createPlayerBtn.addEventListener('click', openCreateModal);
+        console.log('✅ Create Player button listener attached');
+      }
+      
+      // Form submit (better than click listener)
+      if (playerForm) {
+        playerForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          handleFormSubmit(e);
+        });
+        console.log('✅ Player form submit listener attached');
+      } else {
+        console.error('❌ Player form not found!');
+      }
+      
+      confirmDeleteBtn.addEventListener('click', handleDeleteConfirm);
+      
+      // Filter inputs
+      searchNameInput.addEventListener('input', handleSearch);
+      teamFilter.addEventListener('change', handleSearch);
+      positionFilter.addEventListener('change', handleSearch);
+      jerseyFilter.addEventListener('change', handleSearch);
+      yearOfBirthFilter.addEventListener('change', handleSearch);
+      nationalityFilter.addEventListener('change', handleSearch);
+
+      // Clear filters button
+      document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+        searchNameInput.value = '';
+        teamFilter.value = '';
+        positionFilter.value = '';
+        jerseyFilter.value = '';
+        yearOfBirthFilter.value = '';
+        nationalityFilter.value = '';
+        handleSearch();
+        Toast.info('Filters cleared');
+      });
+
+      // Logout button
+      const logoutBtn = document.getElementById('logoutBtn');
+      console.log('🔍 Logout button element:', logoutBtn);
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          console.log('🚪 Logout button clicked!');
+          e.preventDefault();
+          e.stopPropagation();
+          if (confirm('Are you sure you want to logout?')) {
+            console.log('✅ Logging out...');
+            const result = AuthStore.logout();
+            console.log('Logout result:', result);
+            Toast.info('Logged out successfully');
+            window.location.href = 'login.html';
+          }
+        });
+        console.log('✅ Logout button listener attached');
+      } else {
+        console.error('❌ Logout button not found in DOM');
+      }
+
+      // Mobile menu
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', () => {
+          document.querySelector('.sidebar').classList.toggle('sidebar-open');
+        });
+      }
+    }
+
+    // Check for teamId in URL (from team-view.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    const teamId = urlParams.get('teamId');
+    if (teamId) {
+      teamFilter.value = teamId;
+      const team = TeamsStore.getById(teamId);
+      if (team) {
+        document.querySelector('.page-title').textContent = `Players - ${team.name}`;
+      }
+    }
+
+    // Open create modal
+    function openCreateModal() {
+      console.log('🔔 openCreateModal called!');
+      console.log('Modal object:', window.Modal);
+      console.log('playerModal element:', document.getElementById('playerModal'));
+      
+      if (!window.Modal) {
+        console.error('❌ Modal object is not defined!');
+        alert('Error: Modal utilities not loaded. Please refresh the page.');
+        return;
+      }
+      
+      currentPlayerId = null;
+      document.getElementById('modalTitle').textContent = 'Create Player';
+      playerForm.reset();
+      
+      // Pre-fill team if coming from team view
+      const urlParams = new URLSearchParams(window.location.search);
+      const teamId = urlParams.get('teamId');
+      if (teamId) {
+        document.getElementById('playerTeamId').value = teamId;
+      }
+      
+      console.log('✅ Opening modal...');
+      Modal.open('playerModal');
+    }
+
+    // Open edit modal
+    function openEditModal(playerId) {
+      currentPlayerId = playerId;
+      const player = PlayersStore.getById(playerId);
+      
+      if (!player) {
+        Toast.error('Player not found');
+        return;
+      }
+
+      document.getElementById('modalTitle').textContent = 'Edit Player';
+      
+      // Populate team dropdown first, THEN set values
+      populateTeamDropdown();
+      
+      // Set all form values AFTER populating dropdown
+      document.getElementById('playerId').value = player.id;
+      document.getElementById('playerFirstName').value = player.firstName || '';
+      document.getElementById('playerLastName').value = player.lastName || '';
+      document.getElementById('playerYearOfBirth').value = player.yearOfBirth || '';
+      document.getElementById('playerNationality').value = player.nationality || '';
+      document.getElementById('playerTeamId').value = player.teamId || '';
+      document.getElementById('playerJerseyNumber').value = player.jerseyNumber || '';
+      document.getElementById('playerPosition').value = player.position || '';
+
+      Modal.open('playerModal');
+    }
+
+    // Open delete modal
+    function openDeleteModal(playerId) {
+      deletePlayerId = playerId;
+      const player = PlayersStore.getById(playerId);
+      
+      if (!player) {
+        Toast.error('Player not found');
+        return;
+      }
+
+      Modal.open('deleteModal');
+    }
+
+    // Handle form submit
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const playerData = {
+        firstName: document.getElementById('playerFirstName').value.trim(),
+        lastName: document.getElementById('playerLastName').value.trim(),
+        yearOfBirth: document.getElementById('playerYearOfBirth').value ? parseInt(document.getElementById('playerYearOfBirth').value) : null,
+        nationality: document.getElementById('playerNationality').value.trim(),
+        teamId: document.getElementById('playerTeamId').value,
+        jerseyNumber: document.getElementById('playerJerseyNumber').value ? parseInt(document.getElementById('playerJerseyNumber').value) : null,
+        position: document.getElementById('playerPosition').value
+      };
+
+      // Validate
+      if (!playerData.firstName || !playerData.lastName || !playerData.teamId || !playerData.position) {
+        Toast.error('Please fill in all required fields');
+        return;
+      }
+
+      let result;
+      if (currentPlayerId) {
+        // Update existing player
+        result = PlayersStore.update(currentPlayerId, playerData);
+        if (result) {
+          Toast.success('Player updated successfully');
+        } else {
+          Toast.error('Failed to update player');
+          return;
+        }
+      } else {
+        // Create new player
+        result = PlayersStore.create(playerData);
+        if (result) {
+          Toast.success('Player created successfully');
+        } else {
+          Toast.error('Failed to create player');
+          return;
+        }
+      }
+
+      Modal.close('playerModal');
+      loadPlayers();
+    }
+
+    // Handle search/filter
+    function handleSearch() {
+      const allPlayers = PlayersStore.getAll();
+      const filtered = filterPlayers(allPlayers);
+      renderPlayersTable(filtered);
+    }
+
+    // Handle delete confirm
+    function handleDeleteConfirm() {
+      if (!deletePlayerId) return;
+
+      const success = PlayersStore.delete(deletePlayerId);
+      if (success) {
+        Toast.success('Player deleted successfully');
+        Modal.close('deleteModal');
+        loadPlayers();
+      } else {
+        Toast.error('Failed to delete player');
+      }
+
+      deletePlayerId = null;
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '—';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Make functions globally available
+    window.openCreateModal = openCreateModal;
+    window.openEditModal = openEditModal;
+    window.openDeleteModal = openDeleteModal;
+
+    // Listen for logout events from other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'handball.auth' && e.newValue === null) {
+        console.log('🚪 Logout detected from another tab, redirecting...');
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Initialize on load
+    console.log('🚀 Players page loading...');
+    checkAuth(); // Check auth FIRST before anything else
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

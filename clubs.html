@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Clubs - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3); cursor: pointer; pointer-events: auto; z-index: 1000; position: relative;">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <div style="display: flex; align-items: center;">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">☰</button>
+          <h1 class="main-header-title">Clubs Management</h1>
+        </div>
+        <div class="main-header-actions">
+          <button class="btn btn-primary" id="createClubBtn" data-master-only>
+            <span>➕</span> Create Club
+          </button>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-4); padding-bottom: var(--spacing-3); border-bottom: 2px solid var(--color-border);">
+            <h2 class="filters-title" style="margin: 0; border: none; padding: 0;">Filters</h2>
+            <button id="clearFiltersBtn" class="btn btn-ghost" style="font-size: var(--font-size-sm); padding: var(--spacing-1) var(--spacing-3);">
+              <span>🔄</span>
+              <span>Clear Filters</span>
+            </button>
+          </div>
+          <div class="filters-grid">
+            <input type="text" id="searchNameInput" class="form-input" placeholder="🔍 Club Name...">
+            <input type="text" id="searchShortNameInput" class="form-input" placeholder="🔍 Short Name...">
+            <select id="regionFilter" class="form-select">
+              <option value="">All Regions</option>
+            </select>
+            <select id="countyFilter" class="form-select">
+              <option value="">All Counties</option>
+            </select>
+            <select id="cityFilter" class="form-select">
+              <option value="">All Cities</option>
+            </select>
+            <input type="text" id="searchCountryInput" class="form-input" placeholder="🔍 Country...">
+          </div>
+        </div>
+
+        <!-- Clubs Table -->
+        <div class="table-container">
+          <table class="table" id="clubsTable">
+            <thead>
+              <tr>
+                <th data-sortable="0">Club Name</th>
+                <th data-sortable="1">Short Name</th>
+                <th data-sortable="2">City</th>
+                <th data-sortable="3">Country</th>
+                <th data-sortable="4">Region</th>
+                <th data-sortable="5">Home Venue</th>
+                <th data-sortable="6">Teams</th>
+                <th style="width: 150px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clubsTableBody">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Club Modal -->
+  <div id="clubModal" class="modal-backdrop">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Create Club</h3>
+        <button class="modal-close" aria-label="Close">×</button>
+      </div>
+      <form id="clubForm">
+        <div class="modal-body">
+          <input type="hidden" id="clubId">
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="clubName" class="form-label required">Name</label>
+              <input
+                type="text"
+                id="clubName"
+                class="form-input"
+                placeholder="e.g., SCM Politehnica Timisoara"
+                required
+              >
+              <div class="form-hint">Full official club name</div>
+            </div>
+
+            <div class="form-group">
+              <label for="clubShortName" class="form-label">Short Name</label>
+              <input
+                type="text"
+                id="clubShortName"
+                class="form-input"
+                placeholder="e.g., SCM Timisoara"
+              >
+            </div>
+          </div>
+
+          <div class="form-row form-row-3">
+            <div class="form-group">
+              <label for="clubRegion" class="form-label">Region</label>
+              <input
+                type="text"
+                id="clubRegion"
+                class="form-input"
+                placeholder="e.g., Banat"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="clubCounty" class="form-label">County</label>
+              <input
+                type="text"
+                id="clubCounty"
+                class="form-input"
+                placeholder="e.g., Timis"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="clubCity" class="form-label">City</label>
+              <input
+                type="text"
+                id="clubCity"
+                class="form-input"
+                placeholder="e.g., Timisoara"
+              >
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="clubCountry" class="form-label">Country</label>
+              <input
+                type="text"
+                id="clubCountry"
+                class="form-input"
+                placeholder="e.g., Romania"
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="clubHomeVenue" class="form-label">Home Venue</label>
+              <input
+                type="text"
+                id="clubHomeVenue"
+                class="form-input"
+                placeholder="e.g., Constantin Jude"
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveClubBtn">
+            <span>💾</span> Save Club
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal-backdrop">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">⚠️ Confirm Delete</h3>
+        <button class="modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteClubName"></strong>?</p>
+        <p class="text-error" style="font-size: var(--font-size-sm);">
+          ⚠️ This action cannot be undone. All teams associated with this club will be affected.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+          <span>🗑️</span> Delete Club
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Require authentication
+    requireAuth();
+
+    // Update UI for access level
+    updateUIForAccessLevel();
+
+    // State
+    let currentClubId = null;
+    let deleteClubId = null;
+
+    // DOM Elements
+    const clubModal = document.getElementById('clubModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const clubForm = document.getElementById('clubForm');
+    const clubsTableBody = document.getElementById('clubsTableBody');
+    const searchNameInput = document.getElementById('searchNameInput');
+    const searchShortNameInput = document.getElementById('searchShortNameInput');
+    const regionFilter = document.getElementById('regionFilter');
+    const countyFilter = document.getElementById('countyFilter');
+    const cityFilter = document.getElementById('cityFilter');
+    const searchCountryInput = document.getElementById('searchCountryInput');
+    const createClubBtn = document.getElementById('createClubBtn');
+    const saveClubBtn = document.getElementById('saveClubBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    // Check authentication
+    function checkAuth() {
+      const auth = AuthStore.getState();
+      if (!auth || !AuthStore.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const accessLevel = AuthStore.getAccessLevel();
+      
+      // Update sidebar
+      document.getElementById('userName').textContent = accessLevel === 'master' ? 'Administrator' : 'Viewer';
+      document.getElementById('userRole').textContent = accessLevel === 'master' ? 'Full Access' : 'View Only';
+      document.getElementById('userAvatar').textContent = accessLevel === 'master' ? 'A' : 'V';
+
+      // Hide master-only elements
+      if (accessLevel !== 'master') {
+        document.querySelectorAll('[data-master-only]').forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+    }
+
+    // Initialize
+    function init() {
+      loadClubs();
+      setupEventListeners();
+      Modal.setupCloseHandlers('clubModal');
+      Modal.setupCloseHandlers('deleteModal');
+    }
+
+    // Load and display clubs
+    function loadClubs() {
+      const clubs = ClubsStore.getAll();
+      populateFilterDropdowns(clubs);
+      renderClubsTable(clubs);
+    }
+
+    // Populate filter dropdowns with unique values
+    function populateFilterDropdowns(clubs) {
+      // Get unique values
+      const regions = [...new Set(clubs.map(c => c.region).filter(Boolean))].sort();
+      const counties = [...new Set(clubs.map(c => c.county).filter(Boolean))].sort();
+      const cities = [...new Set(clubs.map(c => c.city).filter(Boolean))].sort();
+
+      // Populate region dropdown
+      regionFilter.innerHTML = '<option value="">All Regions</option>';
+      regions.forEach(region => {
+        const option = document.createElement('option');
+        option.value = region;
+        option.textContent = region;
+        regionFilter.appendChild(option);
+      });
+
+      // Populate county dropdown
+      countyFilter.innerHTML = '<option value="">All Counties</option>';
+      counties.forEach(county => {
+        const option = document.createElement('option');
+        option.value = county;
+        option.textContent = county;
+        countyFilter.appendChild(option);
+      });
+
+      // Populate city dropdown
+      cityFilter.innerHTML = '<option value="">All Cities</option>';
+      cities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        cityFilter.appendChild(option);
+      });
+      
+      // Setup cascading filters
+      setupCascadingFilters();
+      
+      renderClubsTable(clubs);
+    }
+    
+    // Setup cascading filters: Region → County → City
+    function setupCascadingFilters() {
+      const allClubs = ClubsStore.getAll();
+      
+      regionFilter.addEventListener('change', () => {
+        const selectedRegion = regionFilter.value;
+        const counties = [...new Set(allClubs
+          .filter(c => !selectedRegion || c.region === selectedRegion)
+          .map(c => c.county)
+          .filter(Boolean)
+        )].sort();
+        
+        countyFilter.innerHTML = '<option value="">All Counties</option>';
+        counties.forEach(county => {
+          const option = document.createElement('option');
+          option.value = county;
+          option.textContent = county;
+          countyFilter.appendChild(option);
+        });
+        
+        // Reset city filter
+        cityFilter.innerHTML = '<option value="">All Cities</option>';
+        
+        handleSearch();
+      });
+      
+      countyFilter.addEventListener('change', () => {
+        const selectedRegion = regionFilter.value;
+        const selectedCounty = countyFilter.value;
+        const cities = [...new Set(allClubs
+          .filter(c => (!selectedRegion || c.region === selectedRegion) && (!selectedCounty || c.county === selectedCounty))
+          .map(c => c.city)
+          .filter(Boolean)
+        )].sort();
+        
+        cityFilter.innerHTML = '<option value="">All Cities</option>';
+        cities.forEach(city => {
+          const option = document.createElement('option');
+          option.value = city;
+          option.textContent = city;
+          cityFilter.appendChild(option);
+        });
+        
+        handleSearch();
+      });
+      
+      cityFilter.addEventListener('change', handleSearch);
+    }
+
+    // Render clubs table
+    function renderClubsTable(clubs = ClubsStore.getAll()) {
+      if (clubs.length === 0) {
+        clubsTableBody.innerHTML = `
+          <tr>
+            <td colspan="8" class="table-empty">
+              <div class="empty-state">
+                <div class="empty-state-icon">🏠</div>
+                <h4 class="empty-state-title">No clubs found</h4>
+                <p class="empty-state-description">Create your first club to get started</p>
+                ${isMasterAccess() ? '<button class="btn btn-primary" onclick="openCreateModal()">Create Club</button>' : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      clubsTableBody.innerHTML = clubs.map(club => {
+        const teamCount = getTeamCountByClubId(club.id);
+        return `
+        <tr>
+          <td>
+            <strong>
+              <a href="club-view.html?id=${club.id}" style="color: var(--color-primary); text-decoration: none;">
+                ${escapeHtml(club.name)}
+              </a>
+            </strong>
+          </td>
+          <td>${escapeHtml(club.shortName || '—')}</td>
+          <td>${escapeHtml(club.city || '—')}</td>
+          <td>${escapeHtml(club.country || '—')}</td>
+          <td>${escapeHtml(club.region || '—')}</td>
+          <td>${escapeHtml(club.homeVenue || '—')}</td>
+          <td>
+            <a href="teams.html?clubId=${club.id}" 
+               style="color: var(--color-primary); text-decoration: none; font-weight: 500;">
+              ${teamCount} team${teamCount !== 1 ? 's' : ''}
+            </a>
+          </td>
+          <td>
+            <div class="table-actions">
+              <a href="club-view.html?id=${club.id}" class="btn btn-ghost btn-sm" title="View Details">
+                👁️ View
+              </a>
+              ${isMasterAccess() ? `
+                <button class="btn btn-ghost btn-sm" onclick="openEditModal('${club.id}')" title="Edit">
+                  ✏️ Edit
+                </button>
+                <button class="btn btn-ghost btn-sm" onclick="openDeleteModal('${club.id}')" style="color: var(--color-error);" title="Delete">
+                  🗑️
+                </button>
+              ` : `
+                <span class="text-muted" style="font-size: var(--font-size-xs);">View only</span>
+              `}
+            </div>
+          </td>
+        </tr>
+        `;
+      }).join('');
+
+      // Setup sortable
+      TableHelper.setupSortable(document.getElementById('clubsTable'));
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Create button
+      if (createClubBtn) {
+        createClubBtn.addEventListener('click', openCreateModal);
+      }
+
+      // Form submit
+      clubForm.addEventListener('submit', handleFormSubmit);
+
+      // Filter inputs - cascading filters handle their own events
+      searchNameInput.addEventListener('input', handleSearch);
+      searchShortNameInput.addEventListener('input', handleSearch);
+      searchCountryInput.addEventListener('input', handleSearch);
+
+      // Clear filters button
+      document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+        searchNameInput.value = '';
+        searchShortNameInput.value = '';
+        regionFilter.value = '';
+        countyFilter.value = '';
+        cityFilter.value = '';
+        searchCountryInput.value = '';
+        handleSearch();
+        Toast.info('Filters cleared');
+      });
+
+      // Modal close buttons
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = this.closest('.modal-backdrop');
+          if (modal) Modal.close(modal.id);
+        });
+      });
+
+      // Delete confirmation
+      confirmDeleteBtn.addEventListener('click', handleDeleteConfirm);
+
+      // Logout button
+      const logoutBtn = document.getElementById('logoutBtn');
+      console.log('🔍 Logout button element:', logoutBtn);
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          console.log('🚪 Logout button clicked!');
+          e.preventDefault();
+          e.stopPropagation();
+          if (confirm('Are you sure you want to logout?')) {
+            console.log('✅ Logging out...');
+            const result = AuthStore.logout();
+            console.log('Logout result:', result);
+            Toast.info('Logged out successfully');
+            window.location.href = 'login.html';
+          }
+        });
+        console.log('✅ Logout button listener attached');
+      } else {
+        console.error('❌ Logout button not found in DOM');
+      }
+    }
+
+    // Open create modal
+    function openCreateModal() {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to create clubs');
+        return;
+      }
+
+      currentClubId = null;
+      document.getElementById('modalTitle').textContent = 'Create Club';
+      clubForm.reset();
+      FormValidator.clearErrors(clubForm);
+      Modal.open('clubModal');
+    }
+
+    // Open edit modal
+    function openEditModal(clubId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to edit clubs');
+        return;
+      }
+
+      const club = ClubsStore.getById(clubId);
+      if (!club) {
+        Toast.error('Club not found');
+        return;
+      }
+
+      currentClubId = clubId;
+      document.getElementById('modalTitle').textContent = 'Edit Club';
+      document.getElementById('clubId').value = club.id;
+      document.getElementById('clubName').value = club.name || '';
+      document.getElementById('clubShortName').value = club.shortName || '';
+      document.getElementById('clubRegion').value = club.region || '';
+      document.getElementById('clubCounty').value = club.county || '';
+      document.getElementById('clubCity').value = club.city || '';
+      document.getElementById('clubCountry').value = club.country || '';
+      document.getElementById('clubHomeVenue').value = club.homeVenue || '';
+
+      FormValidator.clearErrors(clubForm);
+      Modal.open('clubModal');
+    }
+
+    // Open delete modal
+    function openDeleteModal(clubId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to delete clubs');
+        return;
+      }
+
+      const club = ClubsStore.getById(clubId);
+      if (!club) {
+        Toast.error('Club not found');
+        return;
+      }
+
+      deleteClubId = clubId;
+      document.getElementById('deleteClubName').textContent = club.name;
+      Modal.open('deleteModal');
+    }
+
+    // Handle form submit
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to save clubs');
+        return;
+      }
+
+      if (!FormValidator.validateRequired(clubForm)) {
+        Toast.error('Please fill in all required fields');
+        return;
+      }
+
+      const clubData = {
+        name: document.getElementById('clubName').value.trim(),
+        shortName: document.getElementById('clubShortName').value.trim(),
+        region: document.getElementById('clubRegion').value.trim(),
+        county: document.getElementById('clubCounty').value.trim(),
+        city: document.getElementById('clubCity').value.trim(),
+        country: document.getElementById('clubCountry').value.trim(),
+        homeVenue: document.getElementById('clubHomeVenue').value.trim()
+      };
+
+      let result;
+      if (currentClubId) {
+        // Update existing
+        result = ClubsStore.update(currentClubId, clubData);
+        if (result) {
+          Toast.success('Club updated successfully');
+        } else {
+          Toast.error('Failed to update club');
+          return;
+        }
+      } else {
+        // Create new
+        result = ClubsStore.create(clubData);
+        if (result) {
+          Toast.success('Club created successfully');
+        } else {
+          Toast.error('Failed to create club');
+          return;
+        }
+      }
+
+      Modal.close('clubModal');
+      loadClubs();
+    }
+
+    // Handle search
+    function handleSearch(e) {
+      const allClubs = ClubsStore.getAll();
+
+      const nameTerm = searchNameInput.value.toLowerCase();
+      const shortNameTerm = searchShortNameInput.value.toLowerCase();
+      const region = regionFilter.value;
+      const county = countyFilter.value;
+      const city = cityFilter.value;
+      const countryTerm = searchCountryInput.value.toLowerCase();
+
+      const filtered = allClubs.filter(club => {
+        const matchesName = !nameTerm || (club.name && club.name.toLowerCase().includes(nameTerm));
+        const matchesShortName = !shortNameTerm || (club.shortName && club.shortName.toLowerCase().includes(shortNameTerm));
+        const matchesRegion = !region || (club.region && club.region === region);
+        const matchesCounty = !county || (club.county && club.county === county);
+        const matchesCity = !city || (club.city && club.city === city);
+        const matchesCountry = !countryTerm || (club.country && club.country.toLowerCase().includes(countryTerm));
+        
+        return matchesName && matchesShortName && matchesRegion && matchesCounty && matchesCity && matchesCountry;
+      });
+
+      renderClubsTable(filtered);
+    }
+
+    // Handle delete confirm
+    function handleDeleteConfirm() {
+      if (!deleteClubId) return;
+
+      const success = ClubsStore.delete(deleteClubId);
+      if (success) {
+        Toast.success('Club deleted successfully');
+        Modal.close('deleteModal');
+        loadClubs();
+      } else {
+        Toast.error('Failed to delete club');
+      }
+
+      deleteClubId = null;
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '—';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Get team count by club ID (for links)
+    function getTeamCountByClubId(clubId) {
+      const teams = TeamsStore.getAll();
+      const club = ClubsStore.getById(clubId);
+      if (!club) return 0;
+      return teams.filter(team => team.clubName === club.name).length;
+    }
+
+    // Make functions globally available
+    window.openCreateModal = openCreateModal;
+    window.openEditModal = openEditModal;
+    window.openDeleteModal = openDeleteModal;
+
+    // Listen for logout events from other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'handball.auth' && e.newValue === null) {
+        console.log('🚪 Logout detected from another tab, redirecting...');
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Initialize on load
+    console.log('🚀 Clubs page loading...');
+    checkAuth(); // Check auth FIRST before anything else
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

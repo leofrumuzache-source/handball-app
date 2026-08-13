@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Competitions - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3);">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="page-header">
+        <div class="page-header-left">
+          <button class="btn btn-ghost btn-icon mobile-menu-toggle">
+            ☰
+          </button>
+          <h1 class="page-title">🏆 Competitions</h1>
+        </div>
+        <div class="page-header-right">
+          <button id="createCompetitionBtn" class="btn btn-primary">
+            <span>➕</span>
+            <span>Create Competition</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-4); padding-bottom: var(--spacing-3); border-bottom: 2px solid var(--color-border);">
+            <h2 class="filters-title" style="margin: 0; border: none; padding: 0;">Filters</h2>
+            <button id="clearFiltersBtn" class="btn btn-ghost" style="font-size: var(--font-size-sm); padding: var(--spacing-1) var(--spacing-3);">
+              <span>🔄</span>
+              <span>Clear Filters</span>
+            </button>
+          </div>
+          <div class="filters-grid">
+            <select id="categoryFilter" class="form-select">
+              <option value="">All Categories</option>
+              <option value="U13">U13</option>
+              <option value="U15">U15</option>
+              <option value="U17">U17</option>
+              <option value="U19">U19</option>
+              <option value="Senior">Senior</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+            <select id="genderFilter" class="form-select">
+              <option value="">All Genders</option>
+              <option value="Boys">Boys</option>
+              <option value="Girls">Girls</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+            <select id="typeFilter" class="form-select">
+              <option value="">All Types</option>
+              <option value="official">Official</option>
+              <option value="friendly">Friendly</option>
+            </select>
+            <select id="statusFilter" class="form-select">
+              <option value="">All Statuses</option>
+              <option value="planned">Planned</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <input type="text" id="searchInput" class="form-input" placeholder="🔍 Search competitions...">
+          </div>
+        </div>
+
+        <!-- Competitions Table -->
+        <div class="table-container">
+          <table id="competitionsTable" class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Gender</th>
+                <th>Type</th>
+                <th>Season</th>
+                <th>Status</th>
+                <th>Teams</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="competitionsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Competition Modal -->
+  <div id="competitionModal" class="modal-backdrop">
+    <div class="modal modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle" class="modal-title">Create Competition</h3>
+          <button class="modal-close modal-close-btn">×</button>
+        </div>
+        <form id="competitionForm">
+          <input type="hidden" id="competitionId">
+          
+          <!-- Template Selector -->
+          <div class="form-group" style="background: var(--color-bg); padding: var(--spacing-4); border-radius: var(--radius-md); margin-bottom: var(--spacing-4);">
+            <label for="competitionTemplate" class="form-label">📋 Start from Template (Optional)</label>
+            <select id="competitionTemplate" class="form-select" onchange="applyTemplate()">
+              <option value="">-- Select a template or create from scratch --</option>
+              <option value="single_match">🎯 Single Match Competition (Friendly/Test Game)</option>
+              <option value="junior_u17_official">🏆 Romanian Junior II (U17) - Official</option>
+              <option value="senior_league_standard">📊 Senior League - Standard (2 Rounds)</option>
+              <option value="youth_tournament_weekend">⚡ Youth Tournament - Weekend</option>
+              <option value="friendly_cup_simple">🤝 Friendly Cup - Simple</option>
+              <option value="empty">📝 Empty (Start from Scratch)</option>
+            </select>
+            <div class="form-hint" style="margin-top: var(--spacing-2);">
+              Templates pre-fill competition details and stages. All fields remain editable.
+            </div>
+            <div id="templateInfo" style="margin-top: var(--spacing-3); padding: var(--spacing-3); background: white; border: 1px solid var(--color-border); border-radius: var(--radius-sm); display: none;">
+              <strong style="font-size: var(--font-size-sm);">📋 Template includes:</strong>
+              <ul id="templateStagesList" style="margin: var(--spacing-2) 0 0 var(--spacing-4); font-size: var(--font-size-sm); color: var(--color-text);"></ul>
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="competitionName" class="form-label required">Name</label>
+              <input type="text" id="competitionName" class="form-input" required placeholder="e.g., Romanian U17 National League">
+              <div class="form-hint">Full competition name</div>
+            </div>
+            
+            <div class="form-group">
+              <label for="competitionSeason" class="form-label required">Season</label>
+              <input type="text" id="competitionSeason" class="form-input" required placeholder="e.g., 2025/2026">
+              <div class="form-hint">Competition season year range</div>
+            </div>
+          </div>
+
+          <div class="form-row form-row-3">
+            <div class="form-group">
+              <label for="competitionCategory" class="form-label required">Category</label>
+              <select id="competitionCategory" class="form-select" required>
+                <option value="">Select...</option>
+                <option value="U13">U13</option>
+                <option value="U15">U15</option>
+                <option value="U17">U17</option>
+                <option value="U19">U19</option>
+                <option value="Senior">Senior</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="competitionGender" class="form-label required">Gender</label>
+              <select id="competitionGender" class="form-select" required>
+                <option value="">Select...</option>
+                <option value="Boys">Boys</option>
+                <option value="Girls">Girls</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="competitionType" class="form-label required">Type</label>
+              <select id="competitionType" class="form-select" required>
+                <option value="">Select...</option>
+                <option value="official">Official</option>
+                <option value="friendly">Friendly</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="competitionOrganizer" class="form-label">Organizer</label>
+              <input type="text" id="competitionOrganizer" class="form-input" placeholder="e.g., Romanian Handball Federation">
+            </div>
+            
+            <div class="form-group">
+              <label for="competitionCountry" class="form-label">Country</label>
+              <input type="text" id="competitionCountry" class="form-input" placeholder="e.g., Romania">
+            </div>
+          </div>
+
+          <div class="form-row form-row-2">
+            <div class="form-group">
+              <label for="competitionStartDate" class="form-label">Start Date</label>
+              <input type="date" id="competitionStartDate" class="form-input">
+            </div>
+            
+            <div class="form-group">
+              <label for="competitionEndDate" class="form-label">End Date</label>
+              <input type="date" id="competitionEndDate" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="competitionStatus" class="form-label">Status</label>
+            <select id="competitionStatus" class="form-select">
+              <option value="planned">Planned</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+            <button type="submit" id="saveCompetitionBtn" class="btn btn-primary">
+              <span>💾</span>
+              <span>Save Competition</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal-backdrop">
+    <div class="modal modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Delete Competition</h3>
+          <button class="modal-close modal-close-btn">×</button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete the competition <strong id="deleteCompetitionName"></strong>?</p>
+          <p class="text-muted" style="font-size: var(--font-size-sm); margin-top: var(--spacing-4);">
+            <strong>Warning:</strong> This will also delete all stages and matches associated with this competition. This action cannot be undone.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+          <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+            <span>🗑️</span>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Require authentication
+    requireAuth();
+
+    // Update UI for access level
+    updateUIForAccessLevel();
+
+    // State
+    let currentCompetitionId = null;
+    let deleteCompetitionId = null;
+
+    // DOM Elements
+    const competitionModal = document.getElementById('competitionModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const competitionForm = document.getElementById('competitionForm');
+    const competitionsTableBody = document.getElementById('competitionsTableBody');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const genderFilter = document.getElementById('genderFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const createCompetitionBtn = document.getElementById('createCompetitionBtn');
+    const saveCompetitionBtn = document.getElementById('saveCompetitionBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    // Check authentication
+    function checkAuth() {
+      const auth = AuthStore.getState();
+      if (!auth || !AuthStore.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const accessLevel = AuthStore.getAccessLevel();
+      
+      // Update sidebar
+      document.getElementById('userName').textContent = accessLevel === 'master' ? 'Administrator' : 'Viewer';
+      document.getElementById('userRole').textContent = accessLevel === 'master' ? 'Full Access' : 'View Only';
+      document.getElementById('userAvatar').textContent = accessLevel === 'master' ? 'A' : 'V';
+
+      // Hide master-only elements
+      if (accessLevel !== 'master') {
+        document.querySelectorAll('[data-master-only]').forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+    }
+
+    // Initialize
+    function init() {
+      loadCompetitions();
+      setupEventListeners();
+      Modal.setupCloseHandlers('competitionModal');
+      Modal.setupCloseHandlers('deleteModal');
+    }
+
+    // Load and display competitions
+    function loadCompetitions() {
+      const competitions = CompetitionsStore.getAll();
+      const filtered = filterCompetitions(competitions);
+      renderCompetitionsTable(filtered);
+    }
+
+    // Filter competitions
+    function filterCompetitions(competitions) {
+      const term = searchInput ? searchInput.value.toLowerCase() : '';
+      const category = categoryFilter ? categoryFilter.value : '';
+      const gender = genderFilter ? genderFilter.value : '';
+      const type = typeFilter ? typeFilter.value : '';
+      const status = statusFilter ? statusFilter.value : '';
+
+      return competitions.filter(comp => {
+        const matchesSearch = !term || 
+          (comp.name && comp.name.toLowerCase().includes(term)) ||
+          (comp.season && comp.season.toLowerCase().includes(term)) ||
+          (comp.organizer && comp.organizer.toLowerCase().includes(term));
+        
+        const matchesCategory = !category || comp.category === category;
+        const matchesGender = !gender || comp.gender === gender;
+        const matchesType = !type || comp.type === type;
+        const matchesStatus = !status || comp.status === status;
+
+        return matchesSearch && matchesCategory && matchesGender && matchesType && matchesStatus;
+      });
+    }
+
+    // Render competitions table
+    function renderCompetitionsTable(competitions) {
+      if (competitions.length === 0) {
+        competitionsTableBody.innerHTML = `
+          <tr>
+            <td colspan="8" class="table-empty">
+              <div class="empty-state">
+                <div class="empty-state-icon">🏆</div>
+                <h4 class="empty-state-title">No competitions found</h4>
+                <p class="empty-state-description">Create your first competition to get started</p>
+                ${isMasterAccess() ? '<button class="btn btn-primary" onclick="openCreateModal()">Create Competition</button>' : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      competitionsTableBody.innerHTML = competitions.map(comp => {
+        const teamCount = (comp.participatingTeams || []).length;
+        const statusClass = {
+          'planned': 'badge-muted',
+          'active': 'badge-success',
+          'completed': 'badge-primary',
+          'cancelled': 'badge-error'
+        }[comp.status || 'planned'];
+
+        return `
+        <tr>
+          <td>
+            <strong>
+              <a href="competition-view.html?id=${comp.id}" style="color: var(--color-primary); text-decoration: none;">
+                ${escapeHtml(comp.name)}
+              </a>
+            </strong>
+          </td>
+          <td><span class="badge badge-primary">${escapeHtml(comp.category || '—')}</span></td>
+          <td>${escapeHtml(comp.gender || '—')}</td>
+          <td>${escapeHtml(comp.type || '—')}</td>
+          <td>${escapeHtml(comp.season || '—')}</td>
+          <td><span class="badge ${statusClass}">${escapeHtml(comp.status || 'planned')}</span></td>
+          <td>
+            <a href="competition-view.html?id=${comp.id}#teams" 
+               style="color: var(--color-primary); text-decoration: none; font-weight: 500;">
+              ${teamCount} team${teamCount !== 1 ? 's' : ''}
+            </a>
+          </td>
+          <td>
+            <div class="table-actions">
+              <a href="competition-view.html?id=${comp.id}" class="btn btn-ghost btn-sm" title="View Details">
+                👁️ View
+              </a>
+              ${isMasterAccess() ? `
+                <button class="btn btn-ghost btn-sm" onclick="openEditModal('${comp.id}')" title="Edit">
+                  ✏️ Edit
+                </button>
+                <button class="btn btn-ghost btn-sm" onclick="openDeleteModal('${comp.id}')" style="color: var(--color-error);" title="Delete">
+                  🗑️
+                </button>
+              ` : `
+                <span class="text-muted" style="font-size: var(--font-size-xs);">View only</span>
+              `}
+            </div>
+          </td>
+        </tr>
+        `;
+      }).join('');
+
+      // Setup sortable
+      TableHelper.setupSortable(document.getElementById('competitionsTable'));
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Create button
+      if (createCompetitionBtn) {
+        createCompetitionBtn.addEventListener('click', openCreateModal);
+      }
+
+      // Form submit
+      competitionForm.addEventListener('submit', handleFormSubmit);
+
+      // Filters
+      if (searchInput) searchInput.addEventListener('input', loadCompetitions);
+      if (categoryFilter) categoryFilter.addEventListener('change', loadCompetitions);
+      if (genderFilter) genderFilter.addEventListener('change', loadCompetitions);
+      if (typeFilter) typeFilter.addEventListener('change', loadCompetitions);
+      if (statusFilter) statusFilter.addEventListener('change', loadCompetitions);
+
+      // Clear filters button
+      document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+        document.getElementById('categoryFilter').value = '';
+        document.getElementById('genderFilter').value = '';
+        document.getElementById('typeFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('searchInput').value = '';
+        loadCompetitions();
+        Toast.info('Filters cleared');
+      });
+
+      // Modal close buttons
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = this.closest('.modal-backdrop');
+          if (modal) Modal.close(modal.id);
+        });
+      });
+
+      // Delete confirmation
+      confirmDeleteBtn.addEventListener('click', handleDeleteConfirm);
+
+      // Logout button
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          AuthStore.logout();
+          Toast.info('Logged out successfully');
+          window.location.href = 'login.html';
+        }
+      });
+    }
+
+    // Open create modal
+    function openCreateModal() {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to create competitions');
+        return;
+      }
+
+      currentCompetitionId = null;
+      document.getElementById('modalTitle').textContent = 'Create Competition';
+      competitionForm.reset();
+      document.getElementById('competitionStatus').value = 'planned';
+      
+      // Set default season to current season (editable)
+      const currentYear = new Date().getFullYear();
+      const nextYear = currentYear + 1;
+      document.getElementById('competitionSeason').value = `${currentYear}/${nextYear}`;
+      
+      FormValidator.clearErrors(competitionForm);
+      
+      // Reset modal width for create
+      const modal = document.querySelector('#competitionModal .modal');
+      modal.style.maxWidth = '';
+      
+      Modal.open('competitionModal');
+    }
+
+    // Open edit modal
+    function openEditModal(competitionId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to edit competitions');
+        return;
+      }
+
+      const comp = CompetitionsStore.getById(competitionId);
+      if (!comp) {
+        Toast.error('Competition not found');
+        return;
+      }
+
+      currentCompetitionId = competitionId;
+      document.getElementById('modalTitle').textContent = 'Edit Competition';
+      document.getElementById('competitionId').value = comp.id;
+      document.getElementById('competitionName').value = comp.name || '';
+      document.getElementById('competitionSeason').value = comp.season || '';
+      document.getElementById('competitionCategory').value = comp.category || '';
+      document.getElementById('competitionGender').value = comp.gender || '';
+      document.getElementById('competitionType').value = comp.type || '';
+      document.getElementById('competitionOrganizer').value = comp.organizer || '';
+      document.getElementById('competitionCountry').value = comp.country || '';
+      document.getElementById('competitionStartDate').value = comp.startDate || '';
+      document.getElementById('competitionEndDate').value = comp.endDate || '';
+      document.getElementById('competitionStatus').value = comp.status || 'planned';
+
+      FormValidator.clearErrors(competitionForm);
+      
+      // Make modal 30% wider for edit (800px * 1.3 = 1040px)
+      const modal = document.querySelector('#competitionModal .modal');
+      modal.style.maxWidth = '1040px';
+      
+      Modal.open('competitionModal');
+    }
+
+    // Open delete modal
+    function openDeleteModal(competitionId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to delete competitions');
+        return;
+      }
+
+      const comp = CompetitionsStore.getById(competitionId);
+      if (!comp) {
+        Toast.error('Competition not found');
+        return;
+      }
+
+      deleteCompetitionId = competitionId;
+      document.getElementById('deleteCompetitionName').textContent = comp.name;
+      Modal.open('deleteModal');
+    }
+
+    // Handle form submit
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to save competitions');
+        return;
+      }
+
+      if (!FormValidator.validateRequired(competitionForm)) {
+        Toast.error('Please fill in all required fields');
+        return;
+      }
+
+      const compData = {
+        name: document.getElementById('competitionName').value.trim(),
+        season: document.getElementById('competitionSeason').value.trim(),
+        category: document.getElementById('competitionCategory').value.trim(),
+        gender: document.getElementById('competitionGender').value.trim(),
+        type: document.getElementById('competitionType').value.trim(),
+        organizer: document.getElementById('competitionOrganizer').value.trim(),
+        country: document.getElementById('competitionCountry').value.trim(),
+        startDate: document.getElementById('competitionStartDate').value,
+        endDate: document.getElementById('competitionEndDate').value,
+        status: document.getElementById('competitionStatus').value,
+        participatingTeams: []
+      };
+
+      let result;
+      if (currentCompetitionId) {
+        // Update existing
+        result = CompetitionsStore.update(currentCompetitionId, compData);
+        if (result) {
+          Toast.success('Competition updated successfully');
+        } else {
+          Toast.error('Failed to update competition');
+          return;
+        }
+      } else {
+        // Create new
+        result = CompetitionsStore.create(compData);
+        if (result) {
+          Toast.success('Competition created successfully');
+        } else {
+          Toast.error('Failed to create competition');
+          return;
+        }
+      }
+
+      Modal.close('competitionModal');
+      loadCompetitions();
+      
+      // If template was used with stages, redirect to competition-view to add stages
+      if (window.pendingStages && window.pendingStages.length > 0 && result) {
+        Toast.info('Redirecting to add pre-configured stages...');
+        setTimeout(() => {
+          const competitionId = currentCompetitionId || result.id;
+          window.location.href = `competition-view.html?id=${competitionId}`;
+          // Store pending stages in sessionStorage for the next page
+          sessionStorage.setItem('pendingStages_' + competitionId, JSON.stringify(window.pendingStages));
+        }, 1000);
+      }
+    }
+
+    // Handle delete confirm
+    function handleDeleteConfirm() {
+      if (!deleteCompetitionId) return;
+
+      // Delete associated stages and matches first
+      CompetitionStagesStore.deleteByCompetitionId(deleteCompetitionId);
+      MatchesStore.deleteByCompetitionId(deleteCompetitionId);
+
+      const success = CompetitionsStore.delete(deleteCompetitionId);
+      if (success) {
+        Toast.success('Competition and all associated data deleted successfully');
+        Modal.close('deleteModal');
+        loadCompetitions();
+      } else {
+        Toast.error('Failed to delete competition');
+      }
+
+      deleteCompetitionId = null;
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '—';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Competition Templates
+    const competitionTemplates = {
+      // Romanian Junior II (U17) - Official
+      junior_u17_official: {
+        name: 'Romanian Junior II (U17) National Championship',
+        season: new Date().getFullYear() + '-' + (new Date().getFullYear() + 1),
+        category: 'U17',
+        gender: 'Boys',
+        type: 'official',
+        organizer: 'Romanian Handball Federation',
+        country: 'Romania',
+        status: 'planned',
+        stages: [
+          {
+            name: 'Qualifying Phase - Group Stage',
+            order: 1,
+            format: 'group_stage',
+            numberOfGroups: 4,
+            rounds: 1,
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          },
+          {
+            name: 'Playoffs - Quarterfinals',
+            order: 2,
+            format: 'knockout',
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          },
+          {
+            name: 'Final Four',
+            order: 3,
+            format: 'knockout',
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          }
+        ]
+      },
+      
+      // Senior League - Standard
+      senior_league_standard: {
+        name: 'Senior National League',
+        season: new Date().getFullYear() + '-' + (new Date().getFullYear() + 1),
+        category: 'Senior',
+        gender: 'Boys',
+        type: 'official',
+        organizer: 'National Federation',
+        country: 'Romania',
+        status: 'planned',
+        stages: [
+          {
+            name: 'Regular Season',
+            order: 1,
+            format: 'league',
+            numberOfGroups: 1,
+            rounds: 2,
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          }
+        ]
+      },
+      
+      // Youth Tournament - Weekend
+      youth_tournament_weekend: {
+        name: 'Weekend Youth Tournament',
+        season: new Date().getFullYear().toString(),
+        category: 'U15',
+        gender: 'Mixed',
+        type: 'friendly',
+        organizer: 'Local Club',
+        country: 'Romania',
+        status: 'planned',
+        stages: [
+          {
+            name: 'Group Stage',
+            order: 1,
+            format: 'group_stage',
+            numberOfGroups: 2,
+            rounds: 1,
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          },
+          {
+            name: 'Finals',
+            order: 2,
+            format: 'knockout',
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          }
+        ]
+      },
+      
+      // Friendly Cup - Simple
+      friendly_cup_simple: {
+        name: 'Friendly Cup',
+        season: new Date().getFullYear().toString(),
+        category: 'U17',
+        gender: 'Boys',
+        type: 'friendly',
+        organizer: '',
+        country: 'Romania',
+        status: 'planned',
+        stages: [
+          {
+            name: 'Single Round-Robin',
+            order: 1,
+            format: 'league',
+            numberOfGroups: 1,
+            rounds: 1,
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          }
+        ]
+      },
+      
+      // Single Match Competition
+      single_match: {
+        name: 'Friendly Match',
+        season: new Date().getFullYear().toString(),
+        category: 'U17',
+        gender: 'Boys',
+        type: 'friendly',
+        organizer: '',
+        country: 'Romania',
+        status: 'planned',
+        stages: [
+          {
+            name: 'Single Match',
+            order: 1,
+            format: 'single_match',
+            numberOfGroups: 1,
+            rounds: 1,
+            status: 'scheduled',
+            rules: { pointsForWin: 2, pointsForDraw: 1, pointsForLoss: 0 }
+          }
+        ]
+      }
+    };
+
+    // Apply template
+    window.applyTemplate = function() {
+      const templateId = document.getElementById('competitionTemplate').value;
+      const templateInfo = document.getElementById('templateInfo');
+      const templateStagesList = document.getElementById('templateStagesList');
+      
+      if (!templateId || templateId === 'empty') {
+        // Clear all fields for empty template
+        competitionForm.reset();
+        document.getElementById('competitionStatus').value = 'planned';
+        templateInfo.style.display = 'none';
+        window.pendingStages = null;
+        return;
+      }
+      
+      const template = competitionTemplates[templateId];
+      if (!template) return;
+      
+      // Fill competition fields
+      document.getElementById('competitionName').value = template.name;
+      document.getElementById('competitionSeason').value = template.season;
+      document.getElementById('competitionCategory').value = template.category;
+      document.getElementById('competitionGender').value = template.gender;
+      document.getElementById('competitionType').value = template.type;
+      document.getElementById('competitionOrganizer').value = template.organizer;
+      document.getElementById('competitionCountry').value = template.country;
+      document.getElementById('competitionStatus').value = template.status;
+      
+      // Show template info
+      if (template.stages && template.stages.length > 0) {
+        templateStagesList.innerHTML = template.stages.map((stage, idx) => {
+          const formatLabel = stage.format.replace('_', ' ');
+          const groupsInfo = stage.numberOfGroups ? `${stage.numberOfGroups} group${stage.numberOfGroups !== 1 ? 's' : ''}` : '';
+          const roundsInfo = stage.rounds ? `${stage.rounds} round${stage.rounds !== 1 ? 's' : ''}` : '';
+          const details = [groupsInfo, roundsInfo].filter(Boolean).join(', ');
+          return `<li><strong>Stage ${idx + 1}:</strong> ${stage.name} (${formatLabel}${details ? ' - ' + details : ''})</li>`;
+        }).join('');
+        templateInfo.style.display = 'block';
+      } else {
+        templateInfo.style.display = 'none';
+      }
+      
+      // Store stages data for later creation (after competition is saved)
+      window.pendingStages = template.stages;
+      
+      Toast.success('Template applied! Fill in dates and save the competition.');
+    };
+
+    // Make functions globally available
+    window.openCreateModal = openCreateModal;
+    window.openEditModal = openEditModal;
+    window.openDeleteModal = openDeleteModal;
+
+    // Listen for logout events from other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'handball.auth' && e.newValue === null) {
+        console.log('🚪 Logout detected from another tab, redirecting...');
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Initialize on load
+    console.log('🚀 Competitions page loading...');
+    checkAuth(); // Check auth FIRST before anything else
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

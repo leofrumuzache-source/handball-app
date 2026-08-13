@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Teams - Handball Club Management</title>
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3);">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <div style="display: flex; align-items: center;">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle" style="display: none;">☰</button>
+          <h1 class="main-header-title">Teams Management</h1>
+        </div>
+        <div class="main-header-actions">
+          <button class="btn btn-primary" id="createTeamBtn" data-master-only>
+            <span>➕</span> Create Team
+          </button>
+        </div>
+      </header>
+
+      <div class="main-body">
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-4); padding-bottom: var(--spacing-3); border-bottom: 2px solid var(--color-border);">
+            <h2 class="filters-title" style="margin: 0; border: none; padding: 0;">Filters</h2>
+            <button id="clearFiltersBtn" class="btn btn-ghost" style="font-size: var(--font-size-sm); padding: var(--spacing-1) var(--spacing-3);">
+              <span>🔄</span>
+              <span>Clear Filters</span>
+            </button>
+          </div>
+          <div class="filters-grid">
+            <input type="text" id="searchNameInput" class="form-input" placeholder="🔍 Team Name...">
+            <select id="clubFilter" class="form-select">
+              <option value="">All Clubs</option>
+            </select>
+            <select id="categoryFilter" class="form-select">
+              <option value="">All Categories</option>
+              <option value="U13">U13</option>
+              <option value="U15">U15</option>
+              <option value="U17">U17</option>
+              <option value="U19">U19</option>
+              <option value="Senior">Senior</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+            <select id="genderFilter" class="form-select">
+              <option value="">All Genders</option>
+              <option value="Boys">Boys</option>
+              <option value="Girls">Girls</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+            <select id="ageCategoryFilter" class="form-select">
+              <option value="">All Age Categories</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Teams Table -->
+        <div class="table-container">
+          <table class="table" id="teamsTable">
+            <thead>
+              <tr>
+                <th data-sortable="0">Team Name</th>
+                <th data-sortable="1">Club</th>
+                <th data-sortable="2">Category</th>
+                <th data-sortable="3">Gender</th>
+                <th data-sortable="4">Age Category</th>
+                <th style="width: 150px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="teamsTableBody">
+              <!-- Populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create/Edit Team Modal -->
+  <div id="teamModal" class="modal-backdrop">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Create Team</h3>
+        <button class="modal-close" aria-label="Close">×</button>
+      </div>
+      <form id="teamForm">
+        <div class="modal-body">
+          <input type="hidden" id="teamId">
+
+          <div class="form-group">
+            <label for="teamClubName" class="form-label required">Club</label>
+            <select
+              id="teamClubName"
+              class="form-select"
+              required
+            >
+              <option value="">Select a club...</option>
+              <!-- Populated by JavaScript -->
+            </select>
+            <div class="form-hint">Team must be associated with a club</div>
+          </div>
+
+          <div class="form-group">
+            <label for="teamName" class="form-label required">Team Name</label>
+            <input
+              type="text"
+              id="teamName"
+              class="form-input"
+              placeholder="e.g., SCM Politehnica Timisoara"
+              required
+            >
+          </div>
+
+          <div class="form-row form-row-3">
+            <div class="form-group">
+              <label for="teamCategory" class="form-label required">Category</label>
+              <select
+                id="teamCategory"
+                class="form-select"
+                required
+              >
+                <option value="">Select...</option>
+                <option value="U15">U15</option>
+                <option value="U17">U17</option>
+                <option value="U19">U19</option>
+                <option value="U21">U21</option>
+                <option value="Senior">Senior</option>
+                <option value="Veteran">Veteran</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="teamGender" class="form-label required">Gender</label>
+              <select
+                id="teamGender"
+                class="form-select"
+                required
+              >
+                <option value="">Select...</option>
+                <option value="Boys">Boys</option>
+                <option value="Girls">Girls</option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Mixed">Mixed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="teamAgeCategory" class="form-label required">Age Category</label>
+              <input
+                type="text"
+                id="teamAgeCategory"
+                class="form-input"
+                placeholder="e.g., 2010/2011"
+                required
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveTeamBtn">
+            <span>💾</span> Save Team
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" class="modal-backdrop">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">⚠️ Confirm Delete</h3>
+        <button class="modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong id="deleteTeamName"></strong>?</p>
+        <p class="text-error" style="font-size: var(--font-size-sm);">
+          ⚠️ This action cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+          <span>🗑️</span> Delete Team
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Require authentication
+    requireAuth();
+
+    // Update UI for access level
+    updateUIForAccessLevel();
+
+    // State
+    let currentTeamId = null;
+    let deleteTeamId = null;
+
+    // DOM Elements
+    const teamModal = document.getElementById('teamModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const teamForm = document.getElementById('teamForm');
+    const teamsTableBody = document.getElementById('teamsTableBody');
+    const searchNameInput = document.getElementById('searchNameInput');
+    const clubFilter = document.getElementById('clubFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const genderFilter = document.getElementById('genderFilter');
+    const ageCategoryFilter = document.getElementById('ageCategoryFilter');
+    const createTeamBtn = document.getElementById('createTeamBtn');
+    const saveTeamBtn = document.getElementById('saveTeamBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const clubSelect = document.getElementById('teamClubName');
+
+    // Check authentication
+    function checkAuth() {
+      const auth = AuthStore.getState();
+      if (!auth || !AuthStore.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const accessLevel = AuthStore.getAccessLevel();
+      
+      // Update sidebar
+      document.getElementById('userName').textContent = accessLevel === 'master' ? 'Administrator' : 'Viewer';
+      document.getElementById('userRole').textContent = accessLevel === 'master' ? 'Full Access' : 'View Only';
+      document.getElementById('userAvatar').textContent = accessLevel === 'master' ? 'A' : 'V';
+
+      // Hide master-only elements
+      if (accessLevel !== 'master') {
+        document.querySelectorAll('[data-master-only]').forEach(el => {
+          el.style.display = 'none';
+        });
+      }
+    }
+
+    // Initialize
+    function init() {
+      loadTeams();
+      setupEventListeners();
+      Modal.setupCloseHandlers('teamModal');
+      Modal.setupCloseHandlers('deleteModal');
+    }
+
+    // Load and display teams
+    function loadTeams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const clubId = urlParams.get('clubId');
+      
+      let teams = TeamsStore.getAll();
+      
+      // If viewing from club, filter by clubId
+      if (clubId) {
+        teams = teams.filter(t => t.clubId === clubId);
+        const club = ClubsStore.getById(clubId);
+        if (club) {
+          document.getElementById('pageTitle').textContent = `Teams - ${club.name}`;
+        }
+      }
+      
+      // Populate filter dropdowns
+      populateClubFilter();
+      populateAgeCategoryFilter(teams);
+      
+      // Setup cascading filters
+      setupCascadingFilters();
+      
+      renderTeamsTable(teams);
+    }
+    
+    // Populate club filter dropdown
+    function populateClubFilter() {
+      const clubs = ClubsStore.getAll();
+      clubFilter.innerHTML = '<option value="">All Clubs</option>';
+      clubs.forEach(club => {
+        const option = document.createElement('option');
+        option.value = club.id;
+        option.textContent = club.name;
+        clubFilter.appendChild(option);
+      });
+    }
+    
+    // Setup cascading filters: Category/Gender → Age Category
+    function setupCascadingFilters() {
+      const allTeams = TeamsStore.getAll();
+      
+      // Category filter change
+      categoryFilter.addEventListener('change', () => {
+        const selectedCategory = categoryFilter.value;
+        const selectedGender = genderFilter.value;
+        
+        // Filter teams based on selection
+        let filteredTeams = allTeams;
+        if (selectedCategory) {
+          filteredTeams = filteredTeams.filter(t => t.category === selectedCategory);
+        }
+        if (selectedGender) {
+          filteredTeams = filteredTeams.filter(t => t.gender === selectedGender);
+        }
+        
+        // Update age category dropdown with filtered results
+        populateAgeCategoryFilter(filteredTeams);
+        handleSearch();
+      });
+      
+      // Gender filter change
+      genderFilter.addEventListener('change', () => {
+        const selectedCategory = categoryFilter.value;
+        const selectedGender = genderFilter.value;
+        
+        // Filter teams based on selection
+        let filteredTeams = allTeams;
+        if (selectedCategory) {
+          filteredTeams = filteredTeams.filter(t => t.category === selectedCategory);
+        }
+        if (selectedGender) {
+          filteredTeams = filteredTeams.filter(t => t.gender === selectedGender);
+        }
+        
+        // Update age category dropdown with filtered results
+        populateAgeCategoryFilter(filteredTeams);
+        handleSearch();
+      });
+      
+      // Club filter change
+      clubFilter.addEventListener('change', handleSearch);
+      
+      // Age category filter change
+      ageCategoryFilter.addEventListener('change', handleSearch);
+    }
+
+    // Populate age category filter with unique values
+    function populateAgeCategoryFilter(teams) {
+      const ageCategories = [...new Set(teams.map(t => t.ageCategory).filter(Boolean))].sort();
+      
+      ageCategoryFilter.innerHTML = '<option value="">All Age Categories</option>';
+      ageCategories.forEach(ageCat => {
+        const option = document.createElement('option');
+        option.value = ageCat;
+        option.textContent = ageCat;
+        ageCategoryFilter.appendChild(option);
+      });
+    }
+
+    // Render teams table
+    function renderTeamsTable(teams) {
+      if (teams.length === 0) {
+        teamsTableBody.innerHTML = `
+          <tr>
+            <td colspan="6" class="table-empty">
+              <div class="empty-state">
+                <div class="empty-state-icon">🎯</div>
+                <h4 class="empty-state-title">No teams found</h4>
+                <p class="empty-state-description">Create your first team to get started</p>
+                ${isMasterAccess() ? '<button class="btn btn-primary" onclick="openCreateModal()">Create Team</button>' : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      teamsTableBody.innerHTML = teams.map(team => `
+        <tr>
+          <td>
+            <strong>
+              <a href="team-view.html?id=${team.id}" style="color: var(--color-primary); text-decoration: none;">
+                ${escapeHtml(team.name)}
+              </a>
+            </strong>
+          </td>
+          <td>
+            <a href="club-view.html?id=${getClubIdByName(team.clubName)}" 
+               style="color: var(--color-primary); text-decoration: none;">
+               ${escapeHtml(team.clubName)}
+            </a>
+          </td>
+          <td><span class="badge badge-primary">${escapeHtml(team.category)}</span></td>
+          <td><span class="badge badge-muted">${escapeHtml(team.gender)}</span></td>
+          <td>${escapeHtml(team.ageCategory)}</td>
+          <td>
+            <div class="table-actions">
+              <a href="team-view.html?id=${team.id}" class="btn btn-ghost btn-sm" title="View Details">
+                👁️ View
+              </a>
+              ${isMasterAccess() ? `
+                <button class="btn btn-ghost btn-sm" onclick="openEditModal('${team.id}')" title="Edit">
+                  ✏️ Edit
+                </button>
+                <button class="btn btn-ghost btn-sm" onclick="openDeleteModal('${team.id}')" style="color: var(--color-error);" title="Delete">
+                  🗑️
+                </button>
+              ` : `
+                <span class="text-muted" style="font-size: var(--font-size-xs);">View only</span>
+              `}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      // Setup sortable
+      TableHelper.setupSortable(document.getElementById('teamsTable'));
+    }
+
+    // Populate club dropdown
+    function populateClubDropdown() {
+      const clubs = ClubsStore.getAll();
+      
+      clubSelect.innerHTML = '<option value="">Select a club...</option>';
+      
+      if (clubs.length === 0) {
+        clubSelect.innerHTML += '<option value="" disabled>No clubs available</option>';
+        return;
+      }
+
+      clubs.forEach(club => {
+        const option = document.createElement('option');
+        option.value = club.name;
+        option.textContent = club.name;
+        clubSelect.appendChild(option);
+      });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Create button
+      if (createTeamBtn) {
+        createTeamBtn.addEventListener('click', openCreateModal);
+      }
+
+      // Form submit
+      teamForm.addEventListener('submit', handleFormSubmit);
+
+      // Filter inputs - cascading filters handle their own events
+      searchNameInput.addEventListener('input', handleSearch);
+
+      // Clear filters button
+      document.getElementById('clearFiltersBtn')?.addEventListener('click', () => {
+        searchNameInput.value = '';
+        clubFilter.value = '';
+        categoryFilter.value = '';
+        genderFilter.value = '';
+        ageCategoryFilter.value = '';
+        handleSearch();
+        Toast.info('Filters cleared');
+      });
+
+      // Modal close buttons
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const modal = this.closest('.modal-backdrop');
+          if (modal) Modal.close(modal.id);
+        });
+      });
+
+      // Delete confirmation
+      confirmDeleteBtn.addEventListener('click', handleDeleteConfirm);
+
+      // Modal open - populate clubs
+      teamModal.addEventListener('click', (e) => {
+        if (e.target === teamModal) {
+          populateClubDropdown();
+        }
+      });
+
+      // Logout button
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to logout?')) {
+            AuthStore.logout();
+            Toast.info('Logged out successfully');
+            window.location.href = 'login.html';
+          }
+        });
+        console.log('✅ Logout button listener attached');
+      } else {
+        console.error('❌ Logout button not found');
+      }
+    }
+
+    // Open create modal
+    function openCreateModal() {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to create teams');
+        return;
+      }
+
+      currentTeamId = null;
+      document.getElementById('modalTitle').textContent = 'Create Team';
+      teamForm.reset();
+      FormValidator.clearErrors(teamForm);
+      populateClubDropdown();
+      Modal.open('teamModal');
+    }
+
+    // Open edit modal
+    function openEditModal(teamId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to edit teams');
+        return;
+      }
+
+      const team = TeamsStore.getById(teamId);
+      if (!team) {
+        Toast.error('Team not found');
+        return;
+      }
+
+      currentTeamId = teamId;
+      document.getElementById('modalTitle').textContent = 'Edit Team';
+      
+      // Populate dropdown first, THEN set values
+      populateClubDropdown();
+      
+      // Set all form values AFTER populating dropdown
+      document.getElementById('teamId').value = team.id;
+      document.getElementById('teamClubName').value = team.clubName || '';
+      document.getElementById('teamName').value = team.name || '';
+      document.getElementById('teamCategory').value = team.category || '';
+      document.getElementById('teamGender').value = team.gender || '';
+      document.getElementById('teamAgeCategory').value = team.ageCategory || '';
+
+      FormValidator.clearErrors(teamForm);
+      Modal.open('teamModal');
+    }
+
+    // Open delete modal
+    function openDeleteModal(teamId) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to delete teams');
+        return;
+      }
+
+      const team = TeamsStore.getById(teamId);
+      if (!team) {
+        Toast.error('Team not found');
+        return;
+      }
+
+      deleteTeamId = teamId;
+      document.getElementById('deleteTeamName').textContent = team.name;
+      Modal.open('deleteModal');
+    }
+
+    // Handle form submit
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to save teams');
+        return;
+      }
+
+      if (!FormValidator.validateRequired(teamForm)) {
+        Toast.error('Please fill in all required fields');
+        return;
+      }
+
+      const teamData = {
+        clubName: document.getElementById('teamClubName').value.trim(),
+        name: document.getElementById('teamName').value.trim(),
+        category: document.getElementById('teamCategory').value.trim(),
+        gender: document.getElementById('teamGender').value.trim(),
+        ageCategory: document.getElementById('teamAgeCategory').value.trim()
+      };
+
+      // Validate club exists
+      const club = ClubsStore.getByName(teamData.clubName);
+      if (!club) {
+        Toast.error('Selected club no longer exists');
+        return;
+      }
+
+      let result;
+      if (currentTeamId) {
+        // Update existing
+        result = TeamsStore.update(currentTeamId, teamData);
+        if (result) {
+          Toast.success('Team updated successfully');
+        } else {
+          Toast.error('Failed to update team');
+          return;
+        }
+      } else {
+        // Create new
+        result = TeamsStore.create(teamData);
+        if (result) {
+          Toast.success('Team created successfully');
+        } else {
+          Toast.error('Failed to create team');
+          return;
+        }
+      }
+
+      Modal.close('teamModal');
+      loadTeams();
+    }
+
+    // Handle search
+    function handleSearch(e) {
+      const allTeams = TeamsStore.getAll();
+
+      const nameTerm = searchNameInput.value.toLowerCase();
+      const selectedClubId = clubFilter.value;
+      const category = categoryFilter.value;
+      const gender = genderFilter.value;
+      const ageCategory = ageCategoryFilter.value;
+
+      const filtered = allTeams.filter(team => {
+        const matchesName = !nameTerm || (team.name && team.name.toLowerCase().includes(nameTerm));
+        const matchesClub = !selectedClubId || (team.clubId && team.clubId === selectedClubId);
+        const matchesCategory = !category || (team.category && team.category === category);
+        const matchesGender = !gender || (team.gender && team.gender === gender);
+        const matchesAgeCategory = !ageCategory || (team.ageCategory && team.ageCategory === ageCategory);
+        
+        return matchesName && matchesClub && matchesCategory && matchesGender && matchesAgeCategory;
+      });
+
+      renderTeamsTable(filtered);
+    }
+
+    // Handle delete confirm
+    function handleDeleteConfirm() {
+      if (!deleteTeamId) return;
+
+      const success = TeamsStore.delete(deleteTeamId);
+      if (success) {
+        Toast.success('Team deleted successfully');
+        Modal.close('deleteModal');
+        loadTeams();
+      } else {
+        Toast.error('Failed to delete team');
+      }
+
+      deleteTeamId = null;
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      if (!text) return '—';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Get club ID by name (for links)
+    function getClubIdByName(clubName) {
+      const club = ClubsStore.getByName(clubName);
+      return club ? club.id : '';
+    }
+
+    // Make functions globally available
+    window.openCreateModal = openCreateModal;
+    window.openEditModal = openEditModal;
+    window.openDeleteModal = openDeleteModal;
+
+    // Listen for logout events from other tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'handball.auth' && e.newValue === null) {
+        console.log('🚪 Logout detected from another tab, redirecting...');
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Initialize on load
+    console.log('🚀 Teams page loading...');
+    checkAuth(); // Check auth FIRST before anything else
+    init();
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>

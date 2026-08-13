@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192/2563EB/FFFFFF?text=🤾">
+  <title>Calendar - Handball Club Management</title>
+  
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/utilities.css">
+  
+  <style>
+    /* Calendar-specific styles */
+    .calendar-container {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-6);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    #calendar {
+      max-width: 100%;
+      height: calc(100vh - 350px);
+      min-height: 600px;
+    }
+    
+    /* Custom event styling */
+    .fc-event {
+      cursor: pointer;
+      border: none;
+      font-size: var(--font-size-sm);
+      padding: var(--spacing-1) var(--spacing-2);
+      border-radius: var(--radius-sm);
+    }
+    
+    .fc-event:hover {
+      opacity: 0.9;
+    }
+    
+    .fc-event-title {
+      font-weight: var(--font-weight-medium);
+    }
+    
+    /* Match status colors */
+    .event-scheduled {
+      background-color: #6b7280 !important; /* Grey */
+      border-color: #6b7280 !important;
+    }
+    
+    .event-live {
+      background-color: #22c55e !important; /* Green */
+      border-color: #22c55e !important;
+    }
+    
+    .event-finished {
+      background-color: #3b82f6 !important; /* Blue */
+      border-color: #3b82f6 !important;
+    }
+    
+    .event-postponed {
+      background-color: #eab308 !important; /* Yellow */
+      border-color: #eab308 !important;
+    }
+    
+    .event-cancelled {
+      background-color: #ef4444 !important; /* Red */
+      border-color: #ef4444 !important;
+      text-decoration: line-through;
+    }
+    
+    /* Status Legend */
+    .status-legend {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-4);
+      margin-top: var(--spacing-2);
+      flex-wrap: wrap;
+    }
+    
+    .status-legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-1);
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+    
+    .status-legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .status-legend-color.scheduled {
+      background-color: #6b7280;
+    }
+    
+    .status-legend-color.live {
+      background-color: #22c55e;
+    }
+    
+    .status-legend-color.finished {
+      background-color: #3b82f6;
+    }
+    
+    .status-legend-color.postponed {
+      background-color: #eab308;
+    }
+    
+    .status-legend-color.cancelled {
+      background-color: #ef4444;
+    }
+    
+    /* Calendar header customization */
+    .fc-toolbar {
+      margin-bottom: var(--spacing-4) !important;
+    }
+    
+    .calendar-hint {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      margin-top: var(--spacing-2);
+      padding: var(--spacing-2) var(--spacing-3);
+      background: var(--color-surface);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--color-primary);
+    }
+    
+    .fc-toolbar-title {
+      font-size: var(--font-size-2xl) !important;
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text);
+    }
+    
+    .fc-button {
+      background-color: white !important;
+      border: 1px solid var(--color-border) !important;
+      color: var(--color-text) !important;
+      padding: var(--spacing-2) var(--spacing-3) !important;
+      font-size: var(--font-size-sm) !important;
+      border-radius: var(--radius-md) !important;
+      transition: all var(--transition-fast) !important;
+    }
+    
+    .fc-button:hover {
+      background-color: var(--color-bg) !important;
+      border-color: var(--color-border-dark) !important;
+    }
+    
+    .fc-button-active {
+      background-color: var(--color-primary) !important;
+      border-color: var(--color-primary) !important;
+      color: white !important;
+    }
+    
+    .fc-daygrid-day-number {
+      color: var(--color-text) !important;
+      font-weight: var(--font-weight-medium) !important;
+    }
+    
+    .fc-col-header-cell {
+      background-color: var(--color-bg) !important;
+      padding: var(--spacing-2) !important;
+    }
+    
+    .fc-col-header-cell-cushion {
+      color: var(--color-text) !important;
+      font-weight: var(--font-weight-semibold) !important;
+    }
+    
+    /* Event popover */
+    .event-popover {
+      position: absolute;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-4);
+      box-shadow: var(--shadow-xl);
+      z-index: var(--z-modal-backdrop);
+      max-width: 400px;
+      min-width: 300px;
+    }
+    
+    .event-popover-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-3);
+    }
+    
+    .event-popover-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text);
+      margin-bottom: var(--spacing-1);
+    }
+    
+    .event-popover-close {
+      background: none;
+      border: none;
+      font-size: var(--font-size-xl);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+    
+    .event-popover-close:hover {
+      color: var(--color-text);
+    }
+    
+    .event-popover-detail {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      margin-bottom: var(--spacing-2);
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+    }
+    
+    .event-popover-detail strong {
+      min-width: 80px;
+      color: var(--color-text-muted);
+    }
+    
+    .event-popover-actions {
+      display: flex;
+      gap: var(--spacing-2);
+      margin-top: var(--spacing-4);
+      padding-top: var(--spacing-3);
+      border-top: 1px solid var(--color-border);
+    }
+    
+    /* Today highlight */
+    .fc-day-today {
+      background-color: rgba(37, 99, 235, 0.04) !important;
+    }
+    
+    /* Date picker in toolbar */
+    .fc-toolbar .date-picker-container {
+      display: none;
+      align-items: center;
+      gap: var(--spacing-2);
+      margin-left: var(--spacing-3);
+    }
+    
+    .fc-toolbar .date-picker-container.visible {
+      display: flex;
+    }
+    
+    .fc-toolbar .date-picker-container label {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      font-weight: var(--font-weight-medium);
+    }
+    
+    .fc-toolbar .date-picker-container input[type="date"] {
+      padding: var(--spacing-1) var(--spacing-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      background: white;
+      cursor: pointer;
+    }
+    
+    .fc-toolbar .date-picker-container input[type="date"]:hover {
+      border-color: var(--color-border-dark);
+    }
+    
+    .fc-toolbar .date-picker-container input[type="date"]:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      #calendar {
+        height: calc(100vh - 400px);
+      }
+      
+      .calendar-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .calendar-filters .form-select,
+      .calendar-filters .form-input {
+        min-width: 100%;
+      }
+      
+      .status-legend {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <span class="sidebar-logo-icon">🤾</span>
+          <span>Handball Club</span>
+        </a>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="index.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Dashboard</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Management</div>
+          <a href="clubs.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏠</span>
+            <span class="sidebar-nav-item-label">Clubs</span>
+          </a>
+          <a href="teams.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🎯</span>
+            <span class="sidebar-nav-item-label">Teams</span>
+          </a>
+          <a href="players.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">👥</span>
+            <span class="sidebar-nav-item-label">Players</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Competition</div>
+          <a href="competitions.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">🏆</span>
+            <span class="sidebar-nav-item-label">Competitions</span>
+          </a>
+          <a href="matches.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚔️</span>
+            <span class="sidebar-nav-item-label">Matches</span>
+          </a>
+          <a href="calendar.html" class="sidebar-nav-item active">
+            <span class="sidebar-nav-item-icon">📅</span>
+            <span class="sidebar-nav-item-label">Calendar</span>
+          </a>
+          <a href="standings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📊</span>
+            <span class="sidebar-nav-item-label">Standings</span>
+          </a>
+        </div>
+
+        <div class="sidebar-nav-section" data-master-only>
+          <div class="sidebar-nav-label">Data</div>
+          <a href="import.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">📥</span>
+            <span class="sidebar-nav-item-label">Import CSV</span>
+          </a>
+          <a href="settings.html" class="sidebar-nav-item">
+            <span class="sidebar-nav-item-icon">⚙️</span>
+            <span class="sidebar-nav-item-label">Settings</span>
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar" id="userAvatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="userName">Administrator</div>
+            <div class="sidebar-user-role" id="userRole">Full Access</div>
+          </div>
+        </div>
+        <button class="sidebar-logout" id="logoutBtn" style="margin-top: var(--spacing-3);">
+          <span>🚪</span>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="page-header">
+        <div class="page-header-left">
+          <button class="btn btn-ghost btn-icon mobile-menu-toggle" id="mobileMenuToggle">
+            ☰
+          </button>
+          <div style="display: flex; align-items: center; gap: var(--spacing-4);">
+            <h1 class="page-title" style="margin: 0;">📅 Match Calendar</h1>
+            <div class="status-legend">
+              <div class="status-legend-item">
+                <div class="status-legend-color scheduled"></div>
+                <span>Scheduled</span>
+              </div>
+              <div class="status-legend-item">
+                <div class="status-legend-color live"></div>
+                <span>Live</span>
+              </div>
+              <div class="status-legend-item">
+                <div class="status-legend-color finished"></div>
+                <span>Finished</span>
+              </div>
+              <div class="status-legend-item">
+                <div class="status-legend-color postponed"></div>
+                <span>Postponed</span>
+              </div>
+              <div class="status-legend-item">
+                <div class="status-legend-color cancelled"></div>
+                <span>Cancelled</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="page-header-right">
+          <button id="addMatchBtn" class="btn btn-primary" data-master-only>
+            <span>➕</span>
+            <span>Add Match</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Filters -->
+        <div class="filters-bar">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-4); padding-bottom: var(--spacing-3); border-bottom: 2px solid var(--color-border);">
+            <h2 class="filters-title" style="margin: 0; border: none; padding: 0;">Filters</h2>
+            <button id="clearFiltersBtn" class="btn btn-ghost" style="font-size: var(--font-size-sm); padding: var(--spacing-1) var(--spacing-3);">
+              <span>🔄</span>
+              <span>Clear Filters</span>
+            </button>
+          </div>
+          <div class="filters-grid">
+            <select id="competitionFilter" class="form-select">
+              <option value="">All Competitions</option>
+            </select>
+            <select id="teamFilter" class="form-select">
+              <option value="">All Teams</option>
+            </select>
+            <select id="statusFilter" class="form-select">
+              <option value="">All Statuses</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="live">Live</option>
+              <option value="finished">Finished</option>
+              <option value="postponed">Postponed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Date Picker for Day View -->
+        <div id="datePickerContainer" style="display: none; margin-bottom: var(--spacing-4); padding: var(--spacing-3); background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-border); align-items: center; gap: var(--spacing-2);">
+          <label for="dayViewDatePicker" style="font-weight: var(--font-weight-medium); color: var(--color-text); margin: 0;">📅 Select Date:</label>
+          <input type="date" id="dayViewDatePicker" class="form-select" style="max-width: 200px;" />
+        </div>
+        
+        <!-- Calendar -->
+        <div class="calendar-container">
+          <div id="calendar"></div>
+          <div class="calendar-hint">
+            💡 <strong>Master Access Tip:</strong> Drag events to different dates, or drag the top/bottom edge in Week/Day view to change match time (reorder games on the same day).
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Event Popover -->
+  <div id="eventPopover" class="event-popover" style="display: none;">
+    <div class="event-popover-header">
+      <div>
+        <div class="event-popover-title" id="popoverTitle">Match Details</div>
+        <div id="popoverCompetition" style="font-size: var(--font-size-sm); color: var(--color-text-muted);"></div>
+      </div>
+      <button class="event-popover-close" id="popoverClose">&times;</button>
+    </div>
+    <div id="popoverContent">
+      <!-- Dynamic content -->
+    </div>
+    <div class="event-popover-actions" id="popoverActions">
+      <!-- Dynamic actions -->
+    </div>
+  </div>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    // Calendar state
+    let calendar = null;
+    let allMatches = [];
+    let filteredMatches = [];
+    let currentCompetitionId = null;
+    let currentTeamId = null;
+    let currentStatus = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      requireAuth();
+      
+      // Listen for logout events from other tabs
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'handball.auth' && e.newValue === null) {
+          console.log('🚪 Logout detected from another tab, redirecting...');
+          window.location.href = 'login.html';
+        }
+      });
+      
+      initCalendar();
+      loadFilters();
+      setupEventListeners();
+      updateUIForAccessLevel();
+    });
+
+    // Initialize FullCalendar
+    function initCalendar() {
+      const calendarEl = document.getElementById('calendar');
+      
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        customButtons: {
+          datePicker: {
+            text: '📅 Go to Date',
+            click: function() {
+              const selectedDate = prompt('Enter date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+              if (selectedDate && /^\d{4}-\d{2}-\d{2}$/.test(selectedDate)) {
+                calendar.gotoDate(selectedDate);
+                calendar.changeView('timeGridDay');
+              } else if (selectedDate) {
+                Toast.error('Invalid date format. Please use YYYY-MM-DD (e.g., 2025-01-15)');
+              }
+            }
+          }
+        },
+        buttonText: {
+          today: 'Today',
+          month: 'Month',
+          week: 'Week',
+          day: 'Day',
+          list: 'List'
+        },
+        firstDay: 1, // Monday
+        weekNumbers: true,
+        selectable: true,
+        editable: true, // Enable drag & drop for events
+        droppable: true,
+        eventResizableFromStart: true, // Enable resizing from start
+        defaultTimedEventDuration: '01:30:00', // Default match duration (90 min + buffer)
+        eventDisplay: 'block',
+        eventTimeFormat: {
+          hour: '2-digit',
+          minute: '2-digit',
+          meridiem: false
+        },
+        allDayText: 'All Day',
+        noEventsText: 'No matches to display',
+        
+        // Event rendering
+        eventContent: function(arg) {
+          const match = arg.event.extendedProps;
+          let timeText = '';
+          
+          if (arg.event.allDay) {
+            timeText = 'All Day';
+          } else {
+            timeText = arg.timeText;
+          }
+          
+          let elementHtml = `
+            <div style="padding: 2px 4px;">
+              <div style="font-weight: 600; font-size: 11px; margin-bottom: 1px;">
+                ${timeText}
+              </div>
+              <div style="font-size: 11px; line-height: 1.2;">
+                ${match.homeTeam} vs ${match.awayTeam}
+              </div>
+              ${match.status === 'finished' && match.homeScore !== null ? `
+                <div style="font-size: 10px; font-weight: bold; margin-top: 2px;">
+                  ${match.homeScore} - ${match.awayScore}
+                </div>
+              ` : ''}
+            </div>
+          `;
+          
+          let eventEl = document.createElement('div');
+          eventEl.innerHTML = elementHtml;
+          return { domNodes: [eventEl] };
+        },
+        
+        // Event click handler
+        eventClick: function(info) {
+          const matchId = info.event.extendedProps.matchId;
+          if (matchId) {
+            window.location.href = `match-view.html?id=${matchId}`;
+          } else {
+            showEventPopover(info.event, info.jsEvent);
+          }
+        },
+        
+        // Event drop (reschedule)
+        eventDrop: function(info) {
+          handleEventDrop(info.event, info.revert);
+        },
+        
+        // Event resize
+        eventResize: function(info) {
+          handleEventResize(info.event, info.revert);
+        },
+        
+        // Date click
+        dateClick: function(info) {
+          if (isMasterAccess()) {
+            if (confirm(`Create a new match on ${info.dateStr}?`)) {
+              window.location.href = `matches.html?date=${info.dateStr}`;
+            }
+          }
+        },
+        
+        // Loading state - use eventsSet instead (v6 API)
+        eventsSet: function(events) {
+          // Calendar events loaded - view type check moved to datesSet
+        }
+      });
+      
+      // Listen for view changes and initial render to show/hide date picker
+      calendar.on('datesSet', function(info) {
+        const datePickerContainer = document.getElementById('datePickerContainer');
+        const currentView = info.view.type;
+        if (currentView === 'timeGridDay') {
+          datePickerContainer.style.display = 'flex';
+          // Sync date picker with current calendar date
+          const datePicker = document.getElementById('dayViewDatePicker');
+          datePicker.value = info.startStr.split('T')[0];
+        } else {
+          datePickerContainer.style.display = 'none';
+        }
+      });
+      
+      // Trigger initial date picker visibility check after render
+      setTimeout(() => {
+        const datePickerContainer = document.getElementById('datePickerContainer');
+        const currentView = calendar.view ? calendar.view.type : 'dayGridMonth';
+        if (currentView === 'timeGridDay') {
+          datePickerContainer.style.display = 'flex';
+          const datePicker = document.getElementById('dayViewDatePicker');
+          datePicker.value = calendar.getDate().toISOString().split('T')[0];
+        } else {
+          datePickerContainer.style.display = 'none';
+        }
+      }, 100);
+      
+      calendar.render();
+      loadMatches();
+    }
+
+    // Load matches from storage
+    function loadMatches() {
+      allMatches = MatchesStore.getAll();
+      applyFilters();
+    }
+
+    // Apply filters and update calendar
+    function applyFilters() {
+      filteredMatches = allMatches.filter(match => {
+        if (currentCompetitionId && match.competitionId !== currentCompetitionId) return false;
+        if (currentTeamId && match.homeTeamId !== currentTeamId && match.awayTeamId !== currentTeamId) return false;
+        if (currentStatus && match.status !== currentStatus) return false;
+        return true;
+      });
+      
+      updateCalendarEvents();
+    }
+
+    // Update calendar events
+    function updateCalendarEvents() {
+      calendar.removeAllEvents();
+      
+      const events = filteredMatches.map(match => {
+        const homeTeam = TeamsStore.getById(match.homeTeamId);
+        const awayTeam = TeamsStore.getById(match.awayTeamId);
+        const competition = CompetitionsStore.getById(match.competitionId);
+        
+        let startDate = new Date(`${match.date}T${match.time || '00:00'}`);
+        let endDate = new Date(startDate.getTime() + 90 * 60 * 1000); // 90 minutes default
+        
+        return {
+          id: match.id,
+          title: `${homeTeam ? homeTeam.name : 'Home'} vs ${awayTeam ? awayTeam.name : 'Away'}`,
+          start: startDate.toISOString(),
+          end: endDate.toISOString(),
+          allDay: !match.time,
+          className: `event-${match.status}`,
+          extendedProps: {
+            matchId: match.id,
+            competitionId: match.competitionId,
+            competitionName: competition ? competition.name : 'Unknown',
+            homeTeam: homeTeam ? homeTeam.name : 'Unknown',
+            awayTeam: awayTeam ? awayTeam.name : 'Unknown',
+            homeTeamId: match.homeTeamId,
+            awayTeamId: match.awayTeamId,
+            status: match.status,
+            homeScore: match.homeScore,
+            awayScore: match.awayScore,
+            venue: match.venue,
+            round: match.round,
+            stageId: match.stageId
+          }
+        };
+      });
+      
+      calendar.addEventSource(events);
+    }
+
+    // Load filter dropdowns with cascading logic
+    function loadFilters() {
+      // Competitions
+      const competitions = CompetitionsStore.getAll();
+      const competitionFilter = document.getElementById('competitionFilter');
+      competitions.forEach(comp => {
+        const option = document.createElement('option');
+        option.value = comp.id;
+        option.textContent = `${comp.name} (${comp.season || '—'})`;
+        competitionFilter.appendChild(option);
+      });
+      
+      // Setup cascading filters: Competition → Team
+      setupCascadingFilters();
+    }
+    
+    // Setup cascading filters
+    function setupCascadingFilters() {
+      const competitionFilter = document.getElementById('competitionFilter');
+      const teamFilter = document.getElementById('teamFilter');
+      
+      competitionFilter.addEventListener('change', () => {
+        const selectedCompetitionId = competitionFilter.value;
+        
+        // Reset team filter
+        teamFilter.innerHTML = '<option value="">All Teams</option>';
+        
+        if (selectedCompetitionId) {
+          // Get teams participating in this competition
+          const competition = CompetitionsStore.getById(selectedCompetitionId);
+          if (competition && competition.participatingTeams && competition.participatingTeams.length > 0) {
+            const teamIds = competition.participatingTeams;
+            teamIds.forEach(teamId => {
+              const team = TeamsStore.getById(teamId);
+              if (team) {
+                const option = document.createElement('option');
+                option.value = team.id;
+                option.textContent = team.name;
+                teamFilter.appendChild(option);
+              }
+            });
+          } else {
+            // If no teams assigned, show all teams
+            loadAllTeamsToFilter();
+          }
+        } else {
+          // No competition selected - show all teams
+          loadAllTeamsToFilter();
+        }
+        
+        // Apply filters
+        currentCompetitionId = selectedCompetitionId;
+        currentTeamId = null;
+        teamFilter.value = '';
+        applyFilters();
+      });
+      
+      teamFilter.addEventListener('change', (e) => {
+        currentTeamId = e.target.value;
+        applyFilters();
+      });
+    }
+    
+    // Helper: Load all teams into the team filter
+    function loadAllTeamsToFilter() {
+      const teamFilter = document.getElementById('teamFilter');
+      const teams = TeamsStore.getAll();
+      // Only populate if empty (to avoid duplicates)
+      if (teamFilter.options.length <= 1) {
+        teams.forEach(team => {
+          const option = document.createElement('option');
+          option.value = team.id;
+          option.textContent = team.name;
+          teamFilter.appendChild(option);
+        });
+      }
+    }
+
+    // Show event popover
+    function showEventPopover(event, mouseEvent) {
+      const props = event.extendedProps;
+      const popover = document.getElementById('eventPopover');
+      const title = document.getElementById('popoverTitle');
+      const competition = document.getElementById('popoverCompetition');
+      const content = document.getElementById('popoverContent');
+      const actions = document.getElementById('popoverActions');
+      
+      title.textContent = `${props.homeTeam} vs ${props.awayTeam}`;
+      competition.textContent = props.competitionName;
+      
+      const statusLabels = {
+        scheduled: '📅 Scheduled',
+        live: '🔴 LIVE',
+        finished: '✅ Finished',
+        postponed: '⏸️ Postponed',
+        cancelled: '❌ Cancelled'
+      };
+      
+      let scoreDisplay = '';
+      if (props.status === 'finished' && props.homeScore !== null) {
+        scoreDisplay = `
+          <div class="event-popover-detail">
+            <strong>Score:</strong>
+            <span style="font-weight: bold; font-size: var(--font-size-lg);">
+              ${props.homeScore} - ${props.awayScore}
+            </span>
+          </div>
+        `;
+      }
+      
+      content.innerHTML = `
+        <div class="event-popover-detail">
+          <strong>📅 Date:</strong>
+          <span>${event.start.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        </div>
+        ${event.startStr.includes('T') ? `
+          <div class="event-popover-detail">
+            <strong>⏰ Time:</strong>
+            <span>${event.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span>
+          </div>
+        ` : ''}
+        <div class="event-popover-detail">
+          <strong>📊 Status:</strong>
+          <span>${statusLabels[props.status] || props.status}</span>
+        </div>
+        ${scoreDisplay}
+        ${props.venue ? `
+          <div class="event-popover-detail">
+            <strong>📍 Venue:</strong>
+            <span>${props.venue}</span>
+          </div>
+        ` : ''}
+        ${props.round ? `
+          <div class="event-popover-detail">
+            <strong>🏅 Round:</strong>
+            <span>${props.round}</span>
+          </div>
+        ` : ''}
+      `;
+      
+      // Actions
+      let actionsHtml = `
+        <a href="match-view.html?id=${props.matchId}" class="btn btn-primary btn-sm">
+          <span>👁️</span>
+          <span>View Details</span>
+        </a>
+      `;
+      
+      if (isMasterAccess()) {
+        actionsHtml += `
+          <a href="matches.html?edit=${props.matchId}" class="btn btn-secondary btn-sm">
+            <span>✏️</span>
+            <span>Edit</span>
+          </a>
+        `;
+      }
+      
+      actions.innerHTML = actionsHtml;
+      
+      // Position popover
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const popoverWidth = 350;
+      const popoverHeight = 400;
+      
+      let left = mouseEvent.pageX + 20;
+      let top = mouseEvent.pageY + 20;
+      
+      if (left + popoverWidth > viewportWidth) {
+        left = mouseEvent.pageX - popoverWidth - 20;
+      }
+      
+      if (top + popoverHeight > viewportHeight) {
+        top = viewportHeight - popoverHeight - 20;
+      }
+      
+      popover.style.left = `${Math.max(20, left)}px`;
+      popover.style.top = `${Math.max(20, top)}px`;
+      popover.style.display = 'block';
+    }
+
+    // Hide popover
+    function hidePopover() {
+      document.getElementById('eventPopover').style.display = 'none';
+    }
+
+    // Handle event drop (reschedule)
+    function handleEventDrop(event, revert) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to reschedule matches');
+        revert();
+        return;
+      }
+      
+      const matchId = event.extendedProps.matchId;
+      const newDate = event.start.toISOString().split('T')[0];
+      const newTime = event.start.toTimeString().slice(0, 5);
+      
+      const success = MatchesStore.update(matchId, {
+        date: newDate,
+        time: newTime,
+        updatedAt: new Date().toISOString()
+      });
+      
+      if (success) {
+        Toast.success('Match rescheduled successfully');
+      } else {
+        Toast.error('Failed to reschedule match');
+        revert();
+      }
+    }
+
+    // Handle event resize (change time on same day)
+    function handleEventResize(event, revert) {
+      if (!isMasterAccess()) {
+        Toast.error('You do not have permission to modify match times');
+        revert();
+        return;
+      }
+      
+      const matchId = event.extendedProps.matchId;
+      const newTime = event.start.toTimeString().slice(0, 5); // HH:MM format
+      
+      const success = MatchesStore.update(matchId, {
+        time: newTime,
+        updatedAt: new Date().toISOString()
+      });
+      
+      if (success) {
+        Toast.success('Match time updated successfully');
+      } else {
+        Toast.error('Failed to update match time');
+        revert();
+      }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Competition and team filters are handled by setupCascadingFilters()
+      
+      // Status filter
+      document.getElementById('statusFilter').addEventListener('change', (e) => {
+        currentStatus = e.target.value;
+        applyFilters();
+      });
+      
+      // Clear filters button
+      document.getElementById('clearFiltersBtn').addEventListener('click', () => {
+        document.getElementById('competitionFilter').value = '';
+        document.getElementById('teamFilter').value = '';
+        document.getElementById('statusFilter').value = '';
+        currentCompetitionId = null;
+        currentTeamId = null;
+        currentStatus = null;
+        // Reload all teams
+        loadAllTeamsToFilter();
+        applyFilters();
+        Toast.info('Filters cleared');
+      });
+      
+      // Popover close
+      document.getElementById('popoverClose').addEventListener('click', hidePopover);
+      
+      // Close popover on outside click
+      document.addEventListener('click', (e) => {
+        const popover = document.getElementById('eventPopover');
+        if (popover.style.display === 'block' && !popover.contains(e.target)) {
+          hidePopover();
+        }
+      });
+      
+      // Add match button
+      document.getElementById('addMatchBtn')?.addEventListener('click', () => {
+        if (!isMasterAccess()) {
+          Toast.error('You do not have permission to add matches');
+          return;
+        }
+        window.location.href = 'matches.html';
+      });
+      
+      // Date picker for Day View
+      document.getElementById('dayViewDatePicker')?.addEventListener('change', (e) => {
+        const selectedDate = e.target.value;
+        if (selectedDate) {
+          calendar.gotoDate(selectedDate);
+          Toast.success(`Navigated to ${selectedDate}`);
+        }
+      });
+      
+      // Logout button
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          AuthStore.logout();
+          Toast.info('Logged out successfully');
+          window.location.href = 'login.html';
+        }
+      });
+    }
+    });
+  </script>
+  <script>
+    // Register Service Worker for PWA offline support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((registration) => {
+            console.log('SW registered:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('SW registration failed:', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
