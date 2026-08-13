@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Menu Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
+    
+    .test-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+      background: #2563EB;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      font-size: 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none !important;
+    }
+    
+    @media (max-width: 1024px) {
+      .test-button {
+        display: block !important;
+      }
+    }
+    
+    .info {
+      padding: 20px;
+      margin-top: 80px;
+      background: white;
+      border-radius: 8px;
+      margin: 80px 20px 20px;
+    }
+    
+    .info h1 {
+      margin-bottom: 20px;
+    }
+    
+    .info p {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .debug-info {
+      background: #1E293B;
+      color: #00FF00;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <button class="test-button" id="testBtn">☰ Menu</button>
+  
+  <div class="info">
+    <h1>🧪 Mobile Menu Test</h1>
+    <p><strong>Screen Width:</strong> <span id="screenWidth">Loading...</span></p>
+    <p><strong>Button Visible:</strong> <span id="buttonVisible">Checking...</span></p>
+    <p><strong>CSS Media Query:</strong> <span id="mediaQuery">Checking...</span></p>
+    
+    <div class="debug-info" id="debugInfo">
+      Loading debug info...
+    </div>
+    
+    <p style="margin-top: 20px; color: #64748B;">
+      If you see a BLUE button with "☰ Menu" in the top-left corner, the CSS is working!
+    </p>
+  </div>
+  
+  <script>
+    // Get screen width
+    const width = window.innerWidth;
+    document.getElementById('screenWidth').textContent = width + 'px';
+    
+    // Check if button is visible
+    const btn = document.getElementById('testBtn');
+    const style = window.getComputedStyle(btn);
+    const isVisible = style.display !== 'none';
+    document.getElementById('buttonVisible').textContent = isVisible ? '✅ YES' : '❌ NO';
+    
+    // Check media query
+    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+    document.getElementById('mediaQuery').textContent = isMobile ? '✅ Active (≤1024px)' : '❌ Not Active (>1024px)';
+    
+    // Debug info
+    const debugInfo = document.getElementById('debugInfo');
+    debugInfo.innerHTML = `
+Screen Width: ${width}px
+Button Display: ${style.display}
+Button Visibility: ${style.visibility}
+Button Opacity: ${style.opacity}
+Media Query (≤1024px): ${isMobile ? 'MATCHES' : 'NO MATCH'}
+Media Query (≤768px): ${window.matchMedia('(max-width: 768px)').matches ? 'MATCHES' : 'NO MATCH'}
+Media Query (≤480px): ${window.matchMedia('(max-width: 480px)').matches ? 'MATCHES' : 'NO MATCH'}
+    `;
+    
+    // Button click handler
+    btn.addEventListener('click', () => {
+      alert('Button clicked! JavaScript is working! 🎉');
+    });
+    
+    console.log('🔍 Test Results:', {
+      screenWidth: width,
+      buttonVisible: isVisible,
+      isMobile: isMobile,
+      buttonDisplay: style.display
+    });
+  </script>
+</body>
+</html>
