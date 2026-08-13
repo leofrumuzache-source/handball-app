@@ -541,7 +541,58 @@ function updateUIForAccessLevel() {
 // Auto-initialize Toast on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
   Toast.init();
+  setupMobileMenu();
 });
+
+/**
+ * ============================================
+ * MOBILE MENU TOGGLE
+ * ============================================
+ */
+function setupMobileMenu() {
+  const menuToggle = document.getElementById('mobileMenuToggle');
+  const sidebar = document.querySelector('.sidebar');
+  const backdrop = document.querySelector('.sidebar-backdrop');
+  
+  if (!menuToggle || !sidebar) return;
+  
+  // Toggle sidebar on menu button click
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    if (backdrop) {
+      backdrop.classList.toggle('active');
+    }
+  });
+  
+  // Close sidebar when clicking backdrop
+  if (backdrop) {
+    backdrop.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      backdrop.classList.remove('active');
+    });
+  }
+  
+  // Close sidebar when clicking a nav item
+  const navItems = sidebar.querySelectorAll('.sidebar-nav-item');
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      if (backdrop) {
+        backdrop.classList.remove('active');
+      }
+    });
+  });
+  
+  // Close sidebar on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      sidebar.classList.remove('active');
+      if (backdrop) {
+        backdrop.classList.remove('active');
+      }
+    }
+  });
+}
 
 // Expose to global scope immediately (script is at end of body)
 window.Modal = Modal;
@@ -554,5 +605,6 @@ window.isMasterAccess = isMasterAccess;
 window.isLoggedIn = isLoggedIn;
 window.requireAuth = requireAuth;
 window.updateUIForAccessLevel = updateUIForAccessLevel;
+window.setupMobileMenu = setupMobileMenu;
 
 console.log('✅ UI utilities exposed to window');
