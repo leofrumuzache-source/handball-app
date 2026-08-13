@@ -108,7 +108,7 @@
           <h1 class="main-header-title">Players Management</h1>
         </div>
         <div class="main-header-actions">
-          <button class="btn btn-primary" id="createPlayerBtn" data-master-only onclick="openCreateModal()">
+          <button class="btn btn-primary" id="createPlayerBtn" data-master-only>
             <span>➕</span> Create Player
           </button>
         </div>
@@ -614,17 +614,10 @@
         console.log('✅ Logout button listener attached');
       } else {
         console.error('❌ Logout button not found in DOM');
+      window.location.href = 'login.html';
       }
 
-      // Mobile menu
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', () => {
-          document.querySelector('.sidebar').classList.toggle('sidebar-open');
-        });
-      }
-    }
-
+      // Open add modal
     // Check for teamId in URL (from team-view.html)
     const urlParams = new URLSearchParams(window.location.search);
     const teamId = urlParams.get('teamId');
@@ -781,9 +774,7 @@
     }
 
     // Make functions globally available
-    window.openCreateModal = openCreateModal;
-    window.openEditModal = openEditModal;
-    window.openDeleteModal = openDeleteModal;
+    // (Moved inside DOMContentLoaded below)
 
     // Listen for logout events from other tabs
     window.addEventListener('storage', (e) => {
@@ -794,9 +785,15 @@
     });
 
     // Initialize on load
-    console.log('🚀 Players page loading...');
-    checkAuth(); // Check auth FIRST before anything else
-    init();
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 Players page loading...');
+      checkAuth(); // Check auth FIRST before anything else
+      init();
+      
+      // Make functions globally available AFTER DOM is ready
+      window.openCreateModal = openCreateModal;
+      window.openEditModal = openEditModal;
+      window.openDeleteModal = openDeleteModal;
     });
   </script>
   <script>

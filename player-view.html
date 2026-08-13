@@ -367,21 +367,15 @@
           AuthStore.logout();
           Toast.info('Logged out successfully');
           window.location.href = 'login.html';
+        } else {
+          console.error('❌ Logout button not found in DOM');
         }
-      });
-
-      // Mobile menu
-      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-      if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', () => {
-          document.querySelector('.sidebar').classList.toggle('sidebar-open');
-        });
       }
-    }
 
-    // Initialize on load
-    init();
-    });
+      // Initialize on load
+      document.addEventListener('DOMContentLoaded', () => {
+        init();
+      });
   </script>
   <script>
     // Register Service Worker for PWA offline support

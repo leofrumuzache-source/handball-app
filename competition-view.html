@@ -1120,11 +1120,6 @@
           window.location.href = 'login.html';
         }
       });
-      
-      // Mobile menu toggle
-      document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
-        document.querySelector('.sidebar').classList.toggle('sidebar-open');
-      });
     }
 
     // Check and create pending stages from template
@@ -1481,7 +1476,8 @@
     };
 
     // Initialize on load
-    init();
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
     });
   </script>
   <script>

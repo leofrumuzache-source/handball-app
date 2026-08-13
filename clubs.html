@@ -733,9 +733,7 @@
     }
 
     // Make functions globally available
-    window.openCreateModal = openCreateModal;
-    window.openEditModal = openEditModal;
-    window.openDeleteModal = openDeleteModal;
+    // (Moved inside DOMContentLoaded below)
 
     // Listen for logout events from other tabs
     window.addEventListener('storage', (e) => {
@@ -746,9 +744,15 @@
     });
 
     // Initialize on load
-    console.log('🚀 Clubs page loading...');
-    checkAuth(); // Check auth FIRST before anything else
-    init();
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 Clubs page loading...');
+      checkAuth(); // Check auth FIRST before anything else
+      init();
+      
+      // Make functions globally available AFTER DOM is ready
+      window.openCreateModal = openCreateModal;
+      window.openEditModal = openEditModal;
+      window.openDeleteModal = openDeleteModal;
     });
   </script>
   <script>

@@ -862,15 +862,8 @@
           Toast.info('Logged out successfully');
           window.location.href = 'login.html';
         }
-      });
 
-      // Mobile menu
-      document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
-        document.querySelector('.sidebar').classList.toggle('sidebar-open');
-      });
-    }
-
-    // Enable score editing
+        // Enable score editing
     function enableScoreEditing(side) {
       const inputId = side === 'home' ? 'homeScoreInput' : 'awayScoreInput';
       const input = document.getElementById(inputId);
@@ -1054,7 +1047,8 @@
     }
 
     // Initialize on load
-    init();
+    document.addEventListener('DOMContentLoaded', () => {
+      init();
     });
   </script>
   <script>

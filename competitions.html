@@ -103,7 +103,7 @@
     <main class="main-content">
       <header class="page-header">
         <div class="page-header-left">
-          <button class="btn btn-ghost btn-icon mobile-menu-toggle">
+          <button class="btn btn-ghost btn-icon mobile-menu-toggle" id="mobileMenuToggle">
             ☰
           </button>
           <h1 class="page-title">🏆 Competitions</h1>
@@ -902,9 +902,7 @@
     };
 
     // Make functions globally available
-    window.openCreateModal = openCreateModal;
-    window.openEditModal = openEditModal;
-    window.openDeleteModal = openDeleteModal;
+    // (Moved inside DOMContentLoaded below)
 
     // Listen for logout events from other tabs
     window.addEventListener('storage', (e) => {
@@ -915,9 +913,15 @@
     });
 
     // Initialize on load
-    console.log('🚀 Competitions page loading...');
-    checkAuth(); // Check auth FIRST before anything else
-    init();
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 Competitions page loading...');
+      checkAuth(); // Check auth FIRST before anything else
+      init();
+      
+      // Make functions globally available AFTER DOM is ready
+      window.openCreateModal = openCreateModal;
+      window.openEditModal = openEditModal;
+      window.openDeleteModal = openDeleteModal;
     });
   </script>
   <script>
