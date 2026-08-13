@@ -441,6 +441,16 @@
   cursor: pointer;
   padding: var(--spacing-2);
   margin-right: var(--spacing-3);
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .mobile-menu-toggle {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 }
 
 /* ============================================
