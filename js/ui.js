@@ -554,11 +554,24 @@ function setupMobileMenu() {
   const sidebar = document.querySelector('.sidebar');
   const backdrop = document.querySelector('.sidebar-backdrop');
   
-  if (!menuToggle || !sidebar) return;
+  console.log('🔍 Mobile Menu Debug:', {
+    hasButton: !!menuToggle,
+    hasSidebar: !!sidebar,
+    buttonDisplay: menuToggle ? window.getComputedStyle(menuToggle).display : 'N/A',
+    sidebarTransform: sidebar ? window.getComputedStyle(sidebar).transform : 'N/A'
+  });
+  
+  if (!menuToggle || !sidebar) {
+    console.error('❌ Mobile menu: Missing button or sidebar!');
+    return;
+  }
+  
+  console.log('✅ Mobile menu initialized');
   
   // Toggle sidebar on menu button click
   menuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('mobile-open');
+    const isOpen = sidebar.classList.toggle('mobile-open');
+    console.log('📱 Sidebar toggled:', isOpen ? 'OPEN' : 'CLOSED');
     if (backdrop) {
       backdrop.classList.toggle('active');
     }
