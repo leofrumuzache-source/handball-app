@@ -558,7 +558,7 @@ function setupMobileMenu() {
   
   // Toggle sidebar on menu button click
   menuToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
+    sidebar.classList.toggle('mobile-open');
     if (backdrop) {
       backdrop.classList.toggle('active');
     }
@@ -567,7 +567,7 @@ function setupMobileMenu() {
   // Close sidebar when clicking backdrop
   if (backdrop) {
     backdrop.addEventListener('click', () => {
-      sidebar.classList.remove('active');
+      sidebar.classList.remove('mobile-open');
       backdrop.classList.remove('active');
     });
   }
@@ -576,7 +576,7 @@ function setupMobileMenu() {
   const navItems = sidebar.querySelectorAll('.sidebar-nav-item');
   navItems.forEach(item => {
     item.addEventListener('click', () => {
-      sidebar.classList.remove('active');
+      sidebar.classList.remove('mobile-open');
       if (backdrop) {
         backdrop.classList.remove('active');
       }
@@ -586,7 +586,7 @@ function setupMobileMenu() {
   // Close sidebar on ESC key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      sidebar.classList.remove('active');
+      sidebar.classList.remove('mobile-open');
       if (backdrop) {
         backdrop.classList.remove('active');
       }
